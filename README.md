@@ -80,3 +80,8 @@ O código deverá ser entregue em um repositório git hospedado na nuvem (ex: Gi
 Use IAM roles to connect GitHub Actions to actions in AWS
 
 https://aws.amazon.com/pt/blogs/security/use-iam-roles-to-connect-github-actions-to-actions-in-aws/
+
+
+Terraform Workspaces
+
+https://developer.hashicorp.com/terraform/language/state/workspaces
