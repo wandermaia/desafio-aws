@@ -1,12 +1,4 @@
-+++++++++++++++++++++++++++++++++
 
-Python e lambda com api gateway
-https://www.youtube.com/watch?v=oT-P5jL9nrM
-
-AWS Lambda Java: Como criar uma AWS Lambda com Java 21 gratuito
-https://www.youtube.com/watch?v=_rRvhn_uNeM
-
-++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 Actions terraform
 
@@ -44,3 +36,15 @@ https://dev.to/aws-builders/how-to-build-aws-vpc-using-terraform-step-by-step-3k
 
 AWS VPC e Terraform na Prática
 https://www.youtube.com/watch?v=cQlS0QpGYSk
+
+
+
++++++++++++++++++++++++++++++++++
+
+Python e lambda com api gateway
+https://www.youtube.com/watch?v=oT-P5jL9nrM
+
+AWS Lambda Java: Como criar uma AWS Lambda com Java 21 gratuito
+https://www.youtube.com/watch?v=_rRvhn_uNeM
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++

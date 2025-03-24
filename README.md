@@ -74,3 +74,9 @@ Como deverá funcionar:
 
 O código deverá ser entregue em um repositório git hospedado na nuvem (ex: GitHub).
 
+
+## Referências
+
+Use IAM roles to connect GitHub Actions to actions in AWS
+
+https://aws.amazon.com/pt/blogs/security/use-iam-roles-to-connect-github-actions-to-actions-in-aws/
