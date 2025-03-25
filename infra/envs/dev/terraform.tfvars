@@ -1,2 +1,2 @@
 environment="dev"
-bucket_name="us-dev-s3-terraform-state"
+bucket_name="us-dev-s3-dados"
