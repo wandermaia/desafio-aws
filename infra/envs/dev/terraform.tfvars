@@ -1,1 +1,2 @@
-bucket_name="us-dev-s3-terraform-state"
+environment="dev"
+bucket_name="us-${var.environment}-s3-terraform-state"
