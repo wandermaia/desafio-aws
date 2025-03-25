@@ -61,7 +61,7 @@ jobs:
       # Passo apenas para visualização. Será removido após os testes.
       - name: Terraform Plan Pre Destroy
         #if: steps.read-destroy-config.outputs.destroy != 'true'
-        id: terraform-plan
+        id: terraform-plan-pre-destroy
         run: cd infra &&
           terraform workspace select ${{ inputs.environment }} || terraform workspace new ${{ inputs.environment }} &&
           terraform plan -var-file="./envs/${{ inputs.environment }}/terraform.tfvars" -out="${{ inputs.environment }}.plan"
