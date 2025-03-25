@@ -1,7 +1,7 @@
-variable "bucket_name" {
+variable "environment" {
   type = string
 }
 
-variable "environment" {
+variable "vpc_cidr" {
   type = string
 }

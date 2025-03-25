@@ -1,2 +1,2 @@
 environment="prd"
-bucket_name="us-prd-s3-dados"
+vpc_cidr="10.10.0.0/16"
