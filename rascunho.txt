@@ -48,6 +48,9 @@ https://www.youtube.com/watch?v=cQlS0QpGYSk
 
 
 
+Native lock terraform
+https://rafaelmedeiros94.medium.com/goodbye-dynamodb-terraform-s3-backend-now-supports-native-locking-06f74037ad39
+
 +++++++++++++++++++++++++++++++++
 
 Python e lambda com api gateway
