@@ -54,7 +54,7 @@ jobs:
             -backend-config="bucket=${{ inputs.aws-statefile-s3-bucket }}" \
             -backend-config="key=${{ github.event.repository.name }}" \
             -backend-config="region=${{ inputs.aws-region }}" \
-            -backend-config="encrypte=true"
+            -backend-config="encrypt=true"
             -backend-config="use_lockfile=true"
 
       - name: Terraform Validate
