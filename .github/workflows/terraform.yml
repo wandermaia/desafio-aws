@@ -15,9 +15,6 @@ on:
       aws-statefile-s3-bucket:
         type: string
         required: true     
-      aws-lock-dynamodb-table:
-        type: string
-        required: true
 
 jobs:
   terraform:
