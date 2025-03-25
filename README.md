@@ -85,3 +85,22 @@ https://aws.amazon.com/pt/blogs/security/use-iam-roles-to-connect-github-actions
 Terraform Workspaces
 
 https://developer.hashicorp.com/terraform/language/state/workspaces
+
+
+AWS Provider
+
+https://registry.terraform.io/providers/hashicorp/aws/latest/docs
+
+
+AWS VPC Terraform module
+
+https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest
+
+
+AWS EKS Terraform module
+
+https://registry.terraform.io/modules/terraform-aws-modules/eks/aws/latest
+
+
+Complete VPC Module parameters
+https://github.com/terraform-aws-modules/terraform-aws-vpc/blob/master/examples/complete/main.tf

@@ -81,3 +81,32 @@ https://github.com/spacelift-io-blog-posts/Blog-Technical-Content/blob/master/ek
 
 Amazon EKS Blueprints Teams Terraform module
 https://registry.terraform.io/modules/aws-ia/eks-blueprints-teams/aws/latest
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+Execução manual
+
+terraform init \
+    -backend-config="bucket=wandermaia-terraform-statefile" \
+    -backend-config="key=desafio-aws" \
+    -backend-config="region=us-east-1" \
+    -backend-config="encrypt=true" \
+    -backend-config="use_lockfile=true"
+
+
+terraform validate
+
+
+terraform workspace select dev || terraform workspace new dev && terraform plan -var-file="./envs/dev/terraform.tfvars" -out="dev.plan"
+
+Apply
+
+terraform workspace select dev || terraform workspace new dev && terraform apply "dev.plan"
+
+
+Destroy
+
+terraform workspace select dev || terraform workspace new dev && terraform destroy -var-file="./envs/dev/terraform.tfvars" -auto-approve

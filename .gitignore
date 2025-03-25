@@ -1,2 +1,4 @@
 .vscode
 .terraform
+.terraform.lock.hcl
+dev.plan
