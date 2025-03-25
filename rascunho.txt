@@ -6,6 +6,12 @@ PIPELINE COMPLETA com Terraform, Github Actions e AWS (parece bom)
 https://www.youtube.com/watch?v=1TNAUW7_bC0
 
 
+Desafio DevOps com AWS + Terraform + GitHub Actions + eks
+https://www.youtube.com/watch?v=OhV-pXgeVq4
+
+
+
+
 Do ZERO ao DEPLOY com Terraform, AWS, Docker e SpringBoot
 https://www.youtube.com/watch?v=OV3yhpqvRvo
 

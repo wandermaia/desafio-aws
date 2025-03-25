@@ -18,6 +18,7 @@ on:
       aws-lock-dynamodb-table:
         type: string
         required: true
+
 jobs:
   terraform:
     runs-on: ubuntu-latest
@@ -32,7 +33,7 @@ jobs:
       - name: Setup terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.8.3]
+          terraform_version: 1.11.2
       
       - name: Configure AWS Credencials
         uses: aws-actions/configure-aws-credentials@v4
@@ -57,16 +58,6 @@ jobs:
 
       - name: Terraform Validate
         run: terraform validate
-
-      # Passo apenas para visualização. Será removido após os testes.
-      # habilitada opção para não gerar lock
-      - name: Terraform Plan Pre Destroy
-        #if: steps.read-destroy-config.outputs.destroy != 'true'
-        id: terraform-plan-pre-destroy
-        run: cd infra &&
-          terraform workspace select ${{ inputs.environment }} || terraform workspace new ${{ inputs.environment }} &&
-          terraform plan -var-file="./envs/${{ inputs.environment }}/terraform.tfvars" -lock=false
-
 
       - name: Terraform Destroy
         if: steps.read-destroy-config.outputs.destroy == 'true'
