@@ -17,6 +17,6 @@ jobs:
       environment: prd
       aws-assume-role-arn: "arn:aws:iam::025444017694:role/github-actions-wandermaia-pipeline"
       aws-region: "us-east-1"
-      aws-statefile-s3-bucket: "wandermaia-s3-terraform-statefile"
+      aws-statefile-s3-bucket: "wandermaia-terraform-statefile"
       aws-lock-dynamodb-table: "wandermaia-dynamo-terraform-lock"
 
