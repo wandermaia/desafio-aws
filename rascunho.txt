@@ -6,6 +6,9 @@ PIPELINE COMPLETA com Terraform, Github Actions e AWS (parece bom)
 https://www.youtube.com/watch?v=1TNAUW7_bC0
 
 
+Do ZERO ao DEPLOY com Terraform, AWS, Docker e SpringBoot
+https://www.youtube.com/watch?v=OV3yhpqvRvo
+
 
 tem alguns links interessantes
 https://spacelift.io/blog/github-actions-terraform
@@ -48,3 +51,24 @@ AWS Lambda Java: Como criar uma AWS Lambda com Java 21 gratuito
 https://www.youtube.com/watch?v=_rRvhn_uNeM
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+eks
+
+https://spacelift.io/blog/bootstrap-complete-amazon-eks-clusters-with-eks-blueprints-for-terraform
+
+
+Create EKS Cluster with Terraform EKS Blueprints (esse parece legal, ainda está um pouco confuso)
+https://www.youtube.com/watch?v=KE504NwP9vs
+
+
+https://aws.amazon.com/pt/blogs/containers/bootstrapping-clusters-with-eks-blueprints/
+
+
+Esse está muito bom simples e fácil de entender. Compensa ler o artigo e depois ver o código.
+https://spacelift.io/blog/bootstrap-complete-amazon-eks-clusters-with-eks-blueprints-for-terraform
+https://github.com/spacelift-io-blog-posts/Blog-Technical-Content/blob/master/eks-blueprints-terraform/main.tf
+
+
+
+Amazon EKS Blueprints Teams Terraform module
+https://registry.terraform.io/modules/aws-ia/eks-blueprints-teams/aws/latest
