@@ -104,3 +104,7 @@ https://registry.terraform.io/modules/terraform-aws-modules/eks/aws/latest
 
 Complete VPC Module parameters
 https://github.com/terraform-aws-modules/terraform-aws-vpc/blob/master/examples/complete/main.tf
+
+
+cidrsubnet Function
+https://developer.hashicorp.com/terraform/language/functions/cidrsubnet

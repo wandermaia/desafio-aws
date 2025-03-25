@@ -1,4 +1,4 @@
 {
-    "dev": true,
-    "prd": true
+    "dev": false,
+    "prd": false
 }

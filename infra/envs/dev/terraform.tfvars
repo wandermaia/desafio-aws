@@ -1,2 +1,2 @@
 environment="dev"
-bucket_name="us-dev-s3-dados"
+vpc_cidr="10.0.0.0/16"
