@@ -2,10 +2,8 @@ name: "DEV DEPLOY"
 
 on:
   push:
-    branches:
-      - develop
-    paths:
-      - infra/**
+    branches: ["develop"]
+    paths: ["infra/**"]
   workflow_dispatch:
     
 
