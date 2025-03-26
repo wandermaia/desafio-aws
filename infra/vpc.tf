@@ -15,5 +15,18 @@ module "vpc" {
   enable_nat_gateway = true
   single_nat_gateway = true
 
+  # Tags gerais
   tags = local.tags
+
+  # Tags para EKS
+  private_subnet_tags = {
+    "kubernetes.io/role/internal-elb" : "1",
+    "kubernetes.io/cluster/eks-${var.environment}" : "shared"
+  }
+
+  public_subnet_tags = {
+    "kubernetes.io/role/elb" : "1",
+    "kubernetes.io/cluster/eks-${var.environment}" : "shared"
+  }
+
 }
