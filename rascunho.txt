@@ -113,6 +113,13 @@ terraform workspace select dev || terraform workspace new dev && terraform destr
 
 
 
+# sudo apt update
+# sudo apt install mysql-client -y
+# mysql -h rds-msql-dev.cilkaqg0kfik.us-east-1.rds.amazonaws.com -P 3306 -udbuser -pdbpassword -D mydb
+#
+# mysql -h mysql-dev.wandermaia.com -P 3306 -udbuser -pdbpassword -D mydb
+
+
 +++++++++++++++++++++++++++++++++++++++++++++
 
 

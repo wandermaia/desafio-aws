@@ -64,3 +64,26 @@ resource "aws_security_group" "security_group_ec2" {
 }
 
 
+resource "aws_security_group" "security_group_eks" {
+
+  name        = "security_group_ec2"
+  description = "security group para teste ec2"
+
+  vpc_id = module.vpc.vpc_id
+
+  #   subnet_id     = element(module.vpc.private_subnets_cidr_blocks, 0)
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
