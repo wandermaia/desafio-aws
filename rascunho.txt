@@ -110,3 +110,40 @@ terraform workspace select dev || terraform workspace new dev && terraform apply
 Destroy
 
 terraform workspace select dev || terraform workspace new dev && terraform destroy -var-file="./envs/dev/terraform.tfvars" -auto-approve
+
+
+
++++++++++++++++++++++++++++++++++++++++++++++
+
+
+ALB com EKS.
+
+https://repost.aws/pt/knowledge-center/eks-alb-ingress-controller-setup
+
+kubectl delete -f https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/refs/tags/v2.6.2/docs/examples/2048/2048_full.yaml
+
+
+
+
+
+https://github.com/infracost/infracost
+
+
+++++++++++++++++++++++++
+
+free tier
+
+RDS
+Serviço de banco de dados relacional gerenciado para MySQL, PostgreSQL, MariaDB ou SQL Server.
+
+750 horas de uso de instâncias db.t2.micro, db.t3.micro e db.t4g.micro mono-AZ do Amazon RDS que executam bancos de dados MySQL, MariaDB e PostgreSQL 
+
+
+https://spacelift.io/blog/terraform-aws-rds
+
+
+
+ec2
+
+750 horas por mês de instância t2.micro ou t3.micro Linux, RHEL ou SLES, dependendo da região
+750 horas por mês de instância t2.micro ou t3.micro Windows, dependendo da região
