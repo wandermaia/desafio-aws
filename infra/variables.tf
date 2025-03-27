@@ -9,3 +9,15 @@ variable "vpc_cidr" {
   type        = string
   nullable    = false
 }
+
+variable "eks_cluster_version" {
+  description = "Versão do EKS que será utilizada na criação do cluster"
+  type        = string
+  nullable    = false
+}
+
+variable "regiao" {
+  description = "Região onde será realizada a criação dos recursos"
+  type        = string
+  nullable    = false
+}
