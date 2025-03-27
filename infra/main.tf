@@ -2,13 +2,13 @@ data "aws_availability_zones" "available" {}
 
 locals {
   name   = "ex-${basename(path.cwd)}"
-  region = "us-east-1"
+  region = var.regiao
 
   vpc_cidr_block = var.vpc_cidr
   azs_to_use     = slice(data.aws_availability_zones.available.names, 0, 3)
 
   eks_cluster_name     = "eks-${var.environment}"
-  eks_version          = "1.30"
+  eks_version          = var.eks_cluster_version
   geral_nodegroup_name = "ndgrp-geral-${var.environment}"
   geral_instance_types = ["t3.micro", "t2.micro"]
 
