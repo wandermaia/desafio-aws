@@ -1,4 +1,9 @@
 environment="dev"
 vpc_cidr="10.0.0.0/16"
-eks_cluster_version="1.30"
+eks_cluster_version="1.32"
 regiao="us-east-1"
+instance_types_ndgrp_geral=["t2.large", "t3.large", "t3.medium"]
+capacity_type_ndgrp_geral="SPOT"
+geral_desired_size   = 3
+geral_min_size       = 3
+geral_max_size       = 6

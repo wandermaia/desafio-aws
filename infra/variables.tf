@@ -21,3 +21,36 @@ variable "regiao" {
   type        = string
   nullable    = false
 }
+
+variable "instance_types_ndgrp_geral" {
+  description = "Tipos de instâncias para o nodegroup geral"
+  type        = list(string)
+  nullable    = false
+}
+
+variable "capacity_type_ndgrp_geral" {
+  description = "Tipos de capacidade do nodegroup geral (SPOT ou ON_DEMAND)"
+  type        = string
+  nullable    = false
+}
+
+
+variable "geral_desired_size" {
+  description = "Quantidade desejada de nodes desejados para o nodegroup geral"
+  type        = string
+  nullable    = false
+}
+
+
+variable "geral_min_size" {
+  description = "Quantidade mínima de nodes desejados para o nodegroup geral"
+  type        = string
+  nullable    = false
+}
+
+variable "geral_max_size" {
+  description = "Quantidade máxima de nodes desejados para o nodegroup geral"
+  type        = string
+  nullable    = false
+}
+
