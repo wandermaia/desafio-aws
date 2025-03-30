@@ -106,7 +106,7 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 
 	if len(req.Nome) < 3 {
 		totalErros.Inc()
-		log.Println("Nome inválido recebido")
+		log.Println("Nome inválido recebido!")
 		http.Error(w, "Nome deve ter pelo menos 3 caracteres", http.StatusBadRequest)
 		return
 	}
