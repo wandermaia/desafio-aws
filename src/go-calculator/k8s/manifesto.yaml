@@ -29,14 +29,17 @@ spec:
       containers:
       - env:
         - name: DB_USER
-          value: "seuUsuarioAqui"
+          # value: "seuUsuarioAqui"
+          value: __USUARIO_BANCO__
         - name: DB_PASSWORD
-          value: "suaSenhaAqui"
+          # value: "suaSenhaAqui"
+          value: __SENHA_BANCO__
         - name: DB_HOST
           value: "mysql-dev.wandermaia.com"
         - name: DB_NAME
           value: "mydb"
-        image: wandermaia/calculadora-api:3
+        #image: wandermaia/calculadora-api:3
+        image: __IMAGEM__
         imagePullPolicy: IfNotPresent
         name: calculadora-api
         ports:

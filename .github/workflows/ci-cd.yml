@@ -46,14 +46,6 @@ jobs:
             wandermaia/calculadora-api:${{ github.run_number }}
             wandermaia/calculadora-api:latest
 
-      
-      # - name: Configure AWS Credencials
-      #   uses: aws-actions/configure-aws-credentials@v4
-      #   with:
-      #     role-to-assume: ${{ inputs.aws-assume-role-arn }}
-      #     role-session-name: GitHub_to_AWS_via_FederatedOID
-      #     aws-region: ${{ inputs.aws-region }}
-      
 
 
   CD:
@@ -65,6 +57,18 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+
+      # Essa action troca os valores entre __ pelas variáveis informadas nos arquivos da pasta.
+      # https://github.com/marketplace/actions/expand-tokens
+      #
+      - uses: sandersaares-actions/expand-tokens@master
+        env:
+          USUARIO_BANCO: "seuUsuarioAqui"
+          SENHA_BANCO: "suaSenhaAqui"
+          IMAGEM: wandermaia/calculadora-api:${{ github.run_number }}
+        with:
+          path: src/go-calculator
+          recursive: true
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
