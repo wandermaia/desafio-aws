@@ -231,3 +231,6 @@ ec2
 
 750 horas por mês de instância t2.micro ou t3.micro Linux, RHEL ou SLES, dependendo da região
 750 horas por mês de instância t2.micro ou t3.micro Windows, dependendo da região
+
+
+teste
