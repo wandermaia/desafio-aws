@@ -1,12 +1,11 @@
-name: "DEV DEPLOY"
+name: "INFRA - PRD DEPLOY"
 
 on:
   push:
-    branches: ["develop"]
+    branches: ["main"]
     paths: ["infra/**"]
   workflow_dispatch:
-    
-
+      
 # Permission can be added at job level or workflow level    
 permissions:
       id-token: write   # This is required for requesting the JWT
@@ -16,8 +15,10 @@ jobs:
   terraform:
     uses: ./.github/workflows/terraform.yml
     with:
-      environment: dev
-      aws-assume-role-arn: "arn:aws:iam::025444017694:role/github-actions-wandermaia-pipeline"
+      environment: prd
       aws-region: "us-east-1"
-      aws-statefile-s3-bucket: "wandermaia-terraform-statefile"
+    secrets:
+      aws-statefile-s3-bucket: ${{ secrets.AWS_S3_STATE_FILE }}
+      aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 

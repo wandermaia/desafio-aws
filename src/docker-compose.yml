@@ -1,0 +1,39 @@
+services:
+  database:
+    container_name: mysql-8
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: go-calculator
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+
+  api:
+    container_name: go-calculator
+    build: ./go-calculator # Caminho para o Dockerfile da api
+    ports:
+      - "7000:7000"
+    environment:
+      DB_USER: root
+      DB_PASSWORD: password
+      DB_HOST: database
+      DB_NAME: go-calculator
+    depends_on:
+      - database
+
+
+  frontend:
+    container_name: front-magic-calculator
+    build:
+      context: ./magic-calculator # Caminho para o Dockerfile do frontend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:5000"
+    environment:
+      API_URL: http://api:7000/backend
+    depends_on:
+      - api
+

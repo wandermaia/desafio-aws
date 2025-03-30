@@ -1,0 +1,97 @@
+name: "APPS - CI/CD"
+
+on:
+  workflow_call:
+    inputs:
+      aws-region:
+        type: string
+        required: true
+      eks-cluster-name:
+        type: string
+        required: true
+    secrets:
+      dockerhub-username:
+        required: true
+      dockerhub-token:
+        required: true
+      aws-access-key-id:
+        required: true
+      aws-secret-access-key:
+        required: true
+
+jobs:
+  CI:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Autenticação no Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.dockerhub-username }}
+          password: ${{ secrets.dockerhub-token }}
+
+      - name: Construção da imagem Docker
+        uses: docker/build-push-action@v6
+        with: 
+          context: ./src/go-calculator
+          file: ./src/go-calculator/Dockerfile
+          push: true
+          tags: |
+            wandermaia/calculadora-api:${{ github.run_number }}
+            wandermaia/calculadora-api:latest
+
+      
+      # - name: Configure AWS Credencials
+      #   uses: aws-actions/configure-aws-credentials@v4
+      #   with:
+      #     role-to-assume: ${{ inputs.aws-assume-role-arn }}
+      #     role-session-name: GitHub_to_AWS_via_FederatedOID
+      #     aws-region: ${{ inputs.aws-region }}
+      
+
+
+  CD:
+    runs-on: ubuntu-latest
+    needs: [CI]
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.aws-access-key-id }}
+          aws-secret-access-key: ${{ secrets.aws-secret-access-key }}
+          aws-region: ${{ inputs.aws-region }}
+
+      - name: Deploy to EKS
+        working-directory: ./src/go-calculator
+        run: |
+          aws eks update-kubeconfig --name ${{ inputs.eks-cluster-name }} --region ${{ inputs.aws-region }}
+          kubectl get ns
+          kubectl apply -f ./k8s/manifesto.yaml
+          
+
+#desafio-aws/src/go-calculator/k8s/manifesto.yaml
+
+#
+#     # Essa action troca os valores entre __ pelas variáveis informadas nos arquivos da pasta.
+#     # https://github.com/marketplace/actions/expand-tokens
+#
+#     - uses: sandersaares-actions/expand-tokens@master
+#       env:
+#         versionstring: 1.2.3.4
+#         best_day_of_week: friday
+#         secret_ingredient: ${{ secrets.secret_ingredient }}
+#       with:
+#         path: src
+#         recursive: true

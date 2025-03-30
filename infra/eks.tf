@@ -3,27 +3,16 @@ module "eks_cluster" {
   source  = "terraform-aws-modules/eks/aws"
   version = "~> 20.0"
 
+  # Criar o cluster após a criação da VPC
+  depends_on = [
+    module.vpc
+  ]
+
   cluster_name    = local.eks_cluster_name
   cluster_version = local.eks_version
 
   cluster_endpoint_private_access = false
   cluster_endpoint_public_access  = true
-
-  # EKS Addons
-  cluster_addons = {
-    coredns = {
-      most_recent = true
-    }
-    eks-pod-identity-agent = {
-      most_recent = true
-    }
-    kube-proxy = {
-      most_recent = true
-    }
-    vpc-cni = {
-      most_recent = true
-    }
-  }
 
   # Habilita o usuário (ou role) que criou o cluster como administrador
   enable_cluster_creator_admin_permissions = true
@@ -39,10 +28,9 @@ module "eks_cluster" {
 
   # Ajustando os valores default para os nodegroups
   eks_managed_node_group_defaults = {
-    # disk_size = 20
 
     # Security Group adicional
-    vpc_security_group_ids = aws_security_group.security_group_eks.id
+    # vpc_security_group_ids = [aws_security_group.security_group_eks.id]
 
     block_device_mappings = {
       xvda = {
@@ -62,17 +50,18 @@ module "eks_cluster" {
   # Criação dos nodegroups
   eks_managed_node_groups = {
 
-    # Nodegroup de instâncias para recursos padrão. Utiliza instâncias Ondemand
+    # Nodegroup para aplicações em geral
     wrkr-01 = {
       name            = local.geral_nodegroup_name
       node_group_name = local.geral_nodegroup_name
 
-      desired_size = 2
-      min_size     = 2
-      max_size     = 2
+      desired_size = var.geral_desired_size
+      min_size     = var.geral_min_size
+      max_size     = var.geral_max_size
 
-      instance_types = local.geral_instance_types
-      capacity_type  = "ON_DEMAND"
+
+      instance_types = local.geral_nodegroup_instance_types
+      capacity_type  = local.geral_nodegroup_capacity_type
 
       labels = {
         cluster-name   = local.eks_cluster_name
@@ -89,27 +78,44 @@ module "eks_cluster" {
 
   }
 
-}
-
-
-# Configurar kubeconfig do cluster criado
-# Executa um comando na máquina local para configurar o acesso ao novo cluster criado.
-resource "null_resource" "kubeconfig" {
-
-  depends_on = [
-    module.eks_cluster
-  ]
-
-  provisioner "local-exec" {
-    command = "aws eks --region us-east-1 update-kubeconfig --name ${local.eks_cluster_name}"
+  # EKS Addons
+  cluster_addons = {
+    coredns = {
+      most_recent = true
+    }
+    eks-pod-identity-agent = {
+      most_recent = true
+    }
+    kube-proxy = {
+      most_recent = true
+    }
+    vpc-cni = {
+      most_recent = true
+    }
   }
+
+  # Tags do Cluster EKS
+  tags = merge(local.tags, {
+    Name        = local.eks_cluster_name,
+    ClusterName = local.eks_cluster_name,
+    EKS-Version = local.eks_version
+  })
+
 }
+
+
+
 
 # Blueprints disponibilizados pela AWS para o diver csi para EBS e utilitários importantes para o cluster
 # https://registry.terraform.io/modules/aws-ia/eks-blueprints-addons/aws/latest
 module "eks_blueprints_addons" {
   source  = "aws-ia/eks-blueprints-addons/aws"
   version = "~> 1.16"
+
+
+  depends_on = [
+    module.eks_cluster
+  ]
 
   cluster_name      = module.eks_cluster.cluster_name
   cluster_endpoint  = module.eks_cluster.cluster_endpoint
@@ -140,6 +146,10 @@ module "ebs_csi_driver_irsa" {
   source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
   version = "~> 5.20"
 
+  depends_on = [
+    module.eks_cluster
+  ]
+
   role_name_prefix = "ebs-csi-driver-"
 
   attach_ebs_csi_policy = true
@@ -161,7 +171,7 @@ module "ebs_csi_driver_irsa" {
 resource "kubernetes_storage_class_v1" "gp3" {
 
   depends_on = [
-    module.eks_blueprints_addons
+    module.eks_cluster
   ]
 
   metadata {
@@ -177,5 +187,19 @@ resource "kubernetes_storage_class_v1" "gp3" {
     "encrypted" = "true"
     "fsType"    = "ext4"
     "type"      = "gp3"
+  }
+}
+
+
+# Configurar kubeconfig do cluster criado
+# Executa um comando na máquina local para configurar o acesso ao novo cluster criado.
+resource "null_resource" "kubeconfig" {
+
+  depends_on = [
+    module.eks_blueprints_addons
+  ]
+
+  provisioner "local-exec" {
+    command = "aws eks --region ${local.region} update-kubeconfig --name ${local.eks_cluster_name}"
   }
 }

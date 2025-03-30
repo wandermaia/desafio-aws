@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Magic Calculator</title>
+</head>
+<body>
+    <h1>Magic Calculator, a magia dos números acontecendo na sua frente!</h1>
+    <form method="POST">
+        <label for="nome">Nome:</label>
+        <input type="text" name="nome" required><br><br>
+        <label for="operador1">Primeiro Número:</label>
+        <input type="number" name="operador1" required><br><br>
+        <label for="operador2">Segundo Número:</label>
+        <input type="number" name="operador2" required><br><br>
+        <button type="submit">Calcular</button>
+    </form>
+    {% if error %}
+    <p style="color: red;">{{ error }}</p>
+    {% endif %}
+</body>
+</html>

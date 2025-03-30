@@ -84,6 +84,18 @@ https://registry.terraform.io/modules/aws-ia/eks-blueprints-teams/aws/latest
 
 
 
+
+aws-auth Module
+
+https://github.com/terraform-aws-modules/terraform-aws-eks/blob/master/modules/aws-auth/README.md
+
+
+MODULE ALB
+
+https://spacelift.io/blog/terraform-alb
+https://registry.terraform.io/modules/terraform-aws-modules/alb/aws/latest
+
+
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -119,6 +131,15 @@ terraform workspace select dev || terraform workspace new dev && terraform destr
 #
 # mysql -h mysql-dev.wandermaia.com -P 3306 -udbuser -pdbpassword -D mydb
 
+aws eks --region us-east-1 update-kubeconfig --name eks-dev
+
+
+
+
+ACtions AWS
+
+https://github.com/marketplace?query=aws-actions
+
 
 +++++++++++++++++++++++++++++++++++++++++++++
 
@@ -126,14 +147,79 @@ terraform workspace select dev || terraform workspace new dev && terraform destr
 ALB com EKS.
 
 https://repost.aws/pt/knowledge-center/eks-alb-ingress-controller-setup
+https://aws.amazon.com/pt/blogs/opensource/kubernetes-ingress-aws-alb-ingress-controller/
 
 kubectl delete -f https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/refs/tags/v2.6.2/docs/examples/2048/2048_full.yaml
+kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/refs/tags/v2.6.2/docs/examples/2048/2048_full.yaml
 
 
 
+https://repost.aws/pt/knowledge-center/waf-restrict-alb-allow-cloudfront
+
+
+
+
+
+
+https://docs.aws.amazon.com/pt_br/vpc/latest/userguide/working-with-aws-managed-prefix-lists.html#use-aws-managed-prefix-list
+
+
+https://cloudonaut.io/cloudfront-prefix-list-security-group/
+
+https://aws.amazon.com/pt/blogs/networking-and-content-delivery/limit-access-to-your-origins-using-the-aws-managed-prefix-list-for-amazon-cloudfront/
+
+
+
+Se funcionar, esse é top
+Esse é para devfinir conteudo privado como oriem do cloudfront. TEM QUE ESTAR EM REGIÃO COMPATÍVEL
+https://docs.aws.amazon.com/pt_br/AmazonCloudFront/latest/DeveloperGuide/private-content-vpc-origins.html
+
+
+Bom exemplo para restringir ip por orgintes de vpc. Funciona perfeitamente e já está no terraform. 
+Porém, ele ultrapassa a quantidade de IPs permitidos para o security group. Tem que solicitar a aws para aumentar o limite.
+https://airwalkreply.com/how-to-restrict-incoming-aws-alb-traffic-to-cloudfront-ip-ranges-only
+
+
+Tabela de Regiões da AWS que permitem o uso de origens de VPC
+https://docs.aws.amazon.com/pt_br/AmazonCloudFront/latest/DeveloperGuide/private-content-vpc-origins.html#vpc-origins-supported-regions
+
+
+
++++++++++++++++++++++++++++++++++++++++
+
+github actions
+
+
+
+Mostra bem a parte da integração, mas não é suficiente.
+https://dev.to/aws-builders/securely-access-amazon-eks-with-github-actions-and-openid-connect-2im2
+
+Automate Docker image builds and pushes to dual container registries (ECR and Docker Hub) in one go using GitHub Actions
+https://dev.to/aws-builders/automate-docker-image-builds-and-push-to-dual-container-registries-ecr-and-docker-hub-in-one-push-using-github-actions-2m82
+
+
+
+Setting Up a CI/CD Pipeline with GitHub Actions, DockerHub, and Kubernetes
+https://medium.com/@jaymesonmendes/setting-up-a-ci-cd-pipeline-with-github-actions-dockerhub-and-kubernetes-04b147867907
+
+
+
+
+https://dlmade.medium.com/ci-cd-with-github-action-and-aws-eks-5fd9714010cd
+
+
+https://www.youtube.com/watch?v=uW-UxGCOSA8
+
+
+Como criar uma pipeline CI/CD com GitHub Actions | #DevOpsNaVeia 003
+https://youtu.be/TKwXC5qSjkE?t=3417
+
+
+++++++++++++++++++++++++++++++++++++++++
 
 
 https://github.com/infracost/infracost
+
 
 
 ++++++++++++++++++++++++
@@ -154,3 +240,6 @@ ec2
 
 750 horas por mês de instância t2.micro ou t3.micro Linux, RHEL ou SLES, dependendo da região
 750 horas por mês de instância t2.micro ou t3.micro Windows, dependendo da região
+
+
+teste

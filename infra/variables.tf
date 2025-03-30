@@ -4,6 +4,17 @@ variable "environment" {
   nullable    = false
 }
 
+variable "regiao" {
+  description = "Região onde será realizada a criação dos recursos"
+  type        = string
+  nullable    = false
+}
+
+# variable "aws_account_id" {
+#   description = "Conta utilizada para a realização das configurações"
+#   type        = string
+#   nullable    = false
+# }
 variable "vpc_cidr" {
   description = "CIDR que será utilizado para criar a VPC"
   type        = string
@@ -16,8 +27,40 @@ variable "eks_cluster_version" {
   nullable    = false
 }
 
-variable "regiao" {
-  description = "Região onde será realizada a criação dos recursos"
+variable "instance_types_ndgrp_geral" {
+  description = "Tipos de instâncias para o nodegroup geral"
+  type        = list(string)
+  nullable    = false
+}
+
+variable "capacity_type_ndgrp_geral" {
+  description = "Tipos de capacidade do nodegroup geral (SPOT ou ON_DEMAND)"
   type        = string
   nullable    = false
 }
+
+
+variable "geral_desired_size" {
+  description = "Quantidade desejada de nodes desejados para o nodegroup geral"
+  type        = string
+  nullable    = false
+}
+
+
+variable "geral_min_size" {
+  description = "Quantidade mínima de nodes desejados para o nodegroup geral"
+  type        = string
+  nullable    = false
+}
+
+variable "geral_max_size" {
+  description = "Quantidade máxima de nodes desejados para o nodegroup geral"
+  type        = string
+  nullable    = false
+}
+
+# variable "user_eks_admin" {
+#   description = "Lista de usuários que serão configurados para serem administradores do eks"
+#   type        = list(string)
+#   nullable    = false
+# }
