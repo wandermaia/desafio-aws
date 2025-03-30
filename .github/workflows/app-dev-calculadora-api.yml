@@ -3,7 +3,7 @@ name: "INFRA - DEV DEPLOY"
 on:
   push:
     branches: ["develop"]
-    paths: ["/src/go-calculator/**"]
+    paths: ["src/go-calculator/**"]
   workflow_dispatch:
     
 
@@ -19,5 +19,3 @@ jobs:
       environment: dev
       aws-assume-role-arn: "arn:aws:iam::025444017694:role/github-actions-wandermaia-pipeline"
       aws-region: "us-east-1"
-
-
