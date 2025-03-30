@@ -16,7 +16,7 @@ spec:
         - name: golang-api
           image: golang-api:latest
           ports:
-            - containerPort: 8080
+            - containerPort: 7000
           env:
             - name: DB_USER
               value: "user"
@@ -26,6 +26,13 @@ spec:
               value: "db"
             - name: DB_NAME
               value: "golang_api"
+          resources:
+            limits:
+              cpu: 250m
+              memory: 256Mi
+            requests:
+              cpu: 10m
+              memory: 128Mi
 ---
 apiVersion: v1
 kind: Service
@@ -37,41 +44,5 @@ spec:
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 8080
-  type: ClusterIP
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: frontend-deployment
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: frontend
-  template:
-    metadata:
-      labels:
-        app: frontend
-    spec:
-      containers:
-      - name: frontend
-        image: your-frontend-image
-        ports:
-        - containerPort: 7000
-        env:
-        - name: API_URL
-          value: "http://api-service:7000/backend"
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: frontend-service
-spec:
-  selector:
-    app: frontend
-  ports:
-    - protocol: TCP
-      port: 80
       targetPort: 7000
-  type: LoadBalancer
+  type: ClusterIP
