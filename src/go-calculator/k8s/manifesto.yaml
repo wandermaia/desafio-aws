@@ -10,8 +10,6 @@ metadata:
   namespace: calculator
   name: calculadora-api
 spec:
-  progressDeadlineSeconds: 600
-  revisionHistoryLimit: 10
   replicas: 2
   selector:
     matchLabels:
@@ -77,21 +75,26 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  namespace: calculator
   name: calculadora-api
+  labels:
+    app.type.monitor: jvm-app
 spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 7000
   selector:
     app: calculadora-api
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 7000
+    tier: backend
   type: ClusterIP
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  namespace: game-2048
-  name: ingress-2-2048
+  namespace: calculator
+  name: ingress-alb-calculadora-api
   annotations:
     alb.ingress.kubernetes.io/scheme: internal
     alb.ingress.kubernetes.io/target-type: ip
@@ -104,6 +107,28 @@ spec:
           pathType: Prefix
           backend:
             service:
-              name: service-2048
+              name: calculadora-api
               port:
                 number: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/enable-cors: "false"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+  name: ingress-nginx-calculadora-api
+  namespace: calculator
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: calculadora-api-dev.wandermaia.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: calculadora-api
+            port:
+              number: 8080

@@ -131,6 +131,10 @@ terraform workspace select dev || terraform workspace new dev && terraform destr
 #
 # mysql -h mysql-dev.wandermaia.com -P 3306 -udbuser -pdbpassword -D mydb
 
+aws eks --region us-east-1 update-kubeconfig --name eks-dev
+
+
+
 
 ACtions AWS
 
