@@ -29,13 +29,13 @@ spec:
       containers:
       - env:
         - name: DB_USER
-          value: "root"
+          value: "seuUsuarioAqui"
         - name: DB_PASSWORD
-          value: "password"
+          value: "suaSenhaAqui"
         - name: DB_HOST
           value: "mysql-dev.wandermaia.com"
         - name: DB_NAME
-          value: "go-calculator"
+          value: "mydb"
         image: wandermaia/calculadora-api:3
         imagePullPolicy: IfNotPresent
         name: calculadora-api
@@ -110,25 +110,4 @@ spec:
               name: calculadora-api
               port:
                 number: 80
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  annotations:
-    nginx.ingress.kubernetes.io/enable-cors: "false"
-    nginx.ingress.kubernetes.io/use-regex: "true"
-  name: ingress-nginx-calculadora-api
-  namespace: calculator
-spec:
-  ingressClassName: nginx
-  rules:
-  - host: calculadora-api-dev.wandermaia.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: calculadora-api
-            port:
-              number: 8080
+
