@@ -18,6 +18,9 @@ jobs:
     secrets:
       dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
       dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
-      aws-role-oid: ${{ secrets.AWS_ROLE_OID }}
+      aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
     with:
       aws-region: "us-east-1"
+      eks-cluster-name: "eks-dev"
+

@@ -14,9 +14,10 @@ on:
         required: true
       dockerhub-token:
         required: true
-      aws-role-oid:
+      aws-access-key-id:
         required: true
-
+      aws-secret-access-key:
+        required: true
 
 jobs:
   CI:
@@ -68,8 +69,9 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ inputs.aws-region }}
-          aws-region: ${{ inputs.aws-role-oid }}
+          aws-access-key-id: ${{ secrets.aws-access-key-id }}
+          aws-secret-access-key: ${{ secrets.aws-secret-access-key }}
+          aws-region: ${{ inputs.aws-region }}
 
       - name: Deploy to EKS
         run: |

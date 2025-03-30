@@ -8,4 +8,4 @@ geral_desired_size   = 3
 geral_min_size       = 3
 geral_max_size       = 6
 aws_account_id = "025444017694"
-user_eks_admin = ["github-actions-user", "wmaia"]
+user_eks_admin = ["wmaia"]
