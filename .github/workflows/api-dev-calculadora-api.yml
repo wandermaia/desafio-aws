@@ -13,7 +13,7 @@ permissions:
       contents: read    # This is required for actions/checkout
 
 jobs:
-  terraform:
+  CI-CD:
     uses: ./.github/workflows/ci-cd.yml
     secrets:
       dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
