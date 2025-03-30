@@ -89,6 +89,13 @@ aws-auth Module
 
 https://github.com/terraform-aws-modules/terraform-aws-eks/blob/master/modules/aws-auth/README.md
 
+
+MODULE ALB
+
+https://spacelift.io/blog/terraform-alb
+https://registry.terraform.io/modules/terraform-aws-modules/alb/aws/latest
+
+
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -168,10 +175,42 @@ Tabela de Regiões da AWS que permitem o uso de origens de VPC
 https://docs.aws.amazon.com/pt_br/AmazonCloudFront/latest/DeveloperGuide/private-content-vpc-origins.html#vpc-origins-supported-regions
 
 
+
++++++++++++++++++++++++++++++++++++++++
+
+github actions
+
+
+
+Mostra bem a parte da integração, mas não é suficiente.
+https://dev.to/aws-builders/securely-access-amazon-eks-with-github-actions-and-openid-connect-2im2
+
+Automate Docker image builds and pushes to dual container registries (ECR and Docker Hub) in one go using GitHub Actions
+https://dev.to/aws-builders/automate-docker-image-builds-and-push-to-dual-container-registries-ecr-and-docker-hub-in-one-push-using-github-actions-2m82
+
+
+
+Setting Up a CI/CD Pipeline with GitHub Actions, DockerHub, and Kubernetes
+https://medium.com/@jaymesonmendes/setting-up-a-ci-cd-pipeline-with-github-actions-dockerhub-and-kubernetes-04b147867907
+
+
+
+
+https://dlmade.medium.com/ci-cd-with-github-action-and-aws-eks-5fd9714010cd
+
+
+https://www.youtube.com/watch?v=uW-UxGCOSA8
+
+
+Como criar uma pipeline CI/CD com GitHub Actions | #DevOpsNaVeia 003
+https://youtu.be/TKwXC5qSjkE?t=3417
+
+
 ++++++++++++++++++++++++++++++++++++++++
 
 
 https://github.com/infracost/infracost
+
 
 
 ++++++++++++++++++++++++

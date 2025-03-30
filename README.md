@@ -89,3 +89,7 @@ https://github.com/terraform-aws-modules/terraform-aws-rds/blob/master/examples/
 
 Controle o tráfego para seus recursos da AWS usando grupos de segurança
 https://docs.aws.amazon.com/pt_br/vpc/latest/userguide/vpc-security-groups.html
+
+
+Docker - Multi-stage builds
+https://docs.docker.com/build/building/multi-stage/

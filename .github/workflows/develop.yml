@@ -1,4 +1,4 @@
-name: "DEV DEPLOY"
+name: "INFRA - DEV DEPLOY"
 
 on:
   push:

@@ -1,4 +1,4 @@
-name: "Terraform Workflow"
+name: "INFRA - Terraform Workflow"
 
 on:
   workflow_call:
