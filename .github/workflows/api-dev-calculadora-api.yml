@@ -1,4 +1,4 @@
-name: "INFRA - DEV DEPLOY"
+name: "API - CALCULADORA DEV DEPLOY"
 
 on:
   push:
@@ -16,6 +16,6 @@ jobs:
   terraform:
     uses: ./.github/workflows/ci-cd.yml
     with:
-      environment: dev
-      aws-assume-role-arn: "arn:aws:iam::025444017694:role/github-actions-wandermaia-pipeline"
+      dockerhub-username: ${{secrets.DOCKERHUB_USERNAME}}
+      dockerhub-token: ${{secrets.DOCKERHUB_TOKEN}}
       aws-region: "us-east-1"
