@@ -20,7 +20,11 @@ jobs:
       dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
       aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
       aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      db-user: ${{ secrets.DB_USER }}
+      db-password: ${{ secrets.DB_PASSWORD }}
+      app-path: "src/go-calculator"
     with:
       aws-region: "us-east-1"
       eks-cluster-name: "eks-dev"
+      repository-name: "calculadora-api"
 
