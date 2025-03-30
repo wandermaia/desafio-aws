@@ -14,6 +14,8 @@ on:
         required: true
       dockerhub-token:
         required: true
+      aws-role-oid:
+        required: true
 
 
 jobs:
@@ -66,10 +68,26 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
-          role-to-assume: arn:aws:iam::<AWS_ACCOUNT_ID>:role/GitHubActionsEKSRole
-          aws-region: ${{ inputs.aws-region }}
+          role-to-assume: ${{ inputs.aws-region }}
+          aws-region: ${{ inputs.aws-role-oid }}
 
       - name: Deploy to EKS
         run: |
           aws eks update-kubeconfig --name ${{ eks-cluster-name }} --region ${{ inputs.aws-region }}
-          kubectl apply -f deployment.yaml
+          kubectl get ns
+
+
+# on: [push]
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - uses: actions/checkout@master
+#     - uses: sandersaares-actions/expand-tokens@master
+#       env:
+#         versionstring: 1.2.3.4
+#         best_day_of_week: friday
+#         secret_ingredient: ${{ secrets.secret_ingredient }}
+#       with:
+#         path: src
+#         recursive: true
