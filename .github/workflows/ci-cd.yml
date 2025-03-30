@@ -63,10 +63,10 @@ jobs:
         shell: bash
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v3
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ inputs.aws-region }}
           aws-region: ${{ inputs.aws-role-oid }}
@@ -77,12 +77,8 @@ jobs:
           kubectl get ns
 
 
-# on: [push]
-# jobs:
-#   build:
-#     runs-on: ubuntu-latest
-#     steps:
-#     - uses: actions/checkout@master
+#
+#     # Essa action troca os valores entre __ pelas variáveis informadas nos arquivos da pasta.
 #     - uses: sandersaares-actions/expand-tokens@master
 #       env:
 #         versionstring: 1.2.3.4

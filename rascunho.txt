@@ -132,6 +132,11 @@ terraform workspace select dev || terraform workspace new dev && terraform destr
 # mysql -h mysql-dev.wandermaia.com -P 3306 -udbuser -pdbpassword -D mydb
 
 
+ACtions AWS
+
+https://github.com/marketplace?query=aws-actions
+
+
 +++++++++++++++++++++++++++++++++++++++++++++
 
 
