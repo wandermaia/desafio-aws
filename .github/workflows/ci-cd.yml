@@ -76,7 +76,7 @@ jobs:
       - name: Deploy to EKS
         working-directory: ./src/go-calculator
         run: |
-          aws eks update-kubeconfig --name ${{ eks-cluster-name }} --region ${{ inputs.aws-region }}
+          aws eks update-kubeconfig --name ${{ inputs.eks-cluster-name }} --region ${{ inputs.aws-region }}
           kubectl get ns
           kubectl apply -f ./k8s/manifesto.yaml
           
