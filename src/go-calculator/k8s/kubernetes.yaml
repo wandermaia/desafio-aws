@@ -58,7 +58,7 @@ spec:
       - name: frontend
         image: your-frontend-image
         ports:
-        - containerPort: 3000
+        - containerPort: 7000
         env:
         - name: API_URL
           value: "http://api-service:7000/backend"
@@ -73,5 +73,5 @@ spec:
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 3000
+      targetPort: 7000
   type: LoadBalancer
