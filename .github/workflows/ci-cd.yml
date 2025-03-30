@@ -38,7 +38,7 @@ jobs:
           file: ./src/go-calculator/Dockerfile
           push: true
           tags: |
-            wandermaia/calculadora-api:${{github.run_number}}
+            wandermaia/calculadora-api:${{ github.run_number }}
             wandermaia/calculadora-api:latest
 
       
