@@ -28,7 +28,7 @@ jobs:
         uses: docker/login-action@v3
         with:
           username: ${{ inputs.dockerhub-username }}
-          password: ${{ dockerhub-token }}
+          password: ${{ inputs.dockerhub-token }}
 
 
       - name: Construção da imagem Docker
