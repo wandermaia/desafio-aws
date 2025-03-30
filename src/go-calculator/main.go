@@ -137,6 +137,6 @@ func main() {
 	r.Handle("/metrics", promhttp.Handler())
 
 	//log.Printf("Servidor rodando na porta %s...", os.Getenv("SERVER_PORT"))
-	log.Println("Servidor rodando na porta 7000 ....")
+	log.Println("Servidor rodando na porta 7000 ...")
 	log.Fatal(http.ListenAndServe(":7000", r))
 }
