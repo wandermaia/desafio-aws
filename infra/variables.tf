@@ -4,6 +4,17 @@ variable "environment" {
   nullable    = false
 }
 
+variable "regiao" {
+  description = "Região onde será realizada a criação dos recursos"
+  type        = string
+  nullable    = false
+}
+
+variable "aws_account_id" {
+  description = "Conta utilizada para a realização das configurações"
+  type        = string
+  nullable    = false
+}
 variable "vpc_cidr" {
   description = "CIDR que será utilizado para criar a VPC"
   type        = string
@@ -12,12 +23,6 @@ variable "vpc_cidr" {
 
 variable "eks_cluster_version" {
   description = "Versão do EKS que será utilizada na criação do cluster"
-  type        = string
-  nullable    = false
-}
-
-variable "regiao" {
-  description = "Região onde será realizada a criação dos recursos"
   type        = string
   nullable    = false
 }
@@ -54,3 +59,8 @@ variable "geral_max_size" {
   nullable    = false
 }
 
+variable "user_eks_admin" {
+  description = "Lista de usuários que serão configurados para serem administradores do eks"
+  type        = list(string)
+  nullable    = false
+}
