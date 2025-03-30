@@ -203,32 +203,3 @@ resource "null_resource" "kubeconfig" {
     command = "aws eks --region ${local.region} update-kubeconfig --name ${local.eks_cluster_name}"
   }
 }
-
-# # Adicionando a role de administradores para acesso ao cluster. 
-# module "eks-admins" {
-#   source  = "terraform-aws-modules/eks/aws//modules/aws-auth"
-#   version = "~> 20.0"
-
-#   depends_on = [
-#     module.eks_cluster
-#   ]
-#   manage_aws_auth_configmap = true
-
-#   aws_auth_roles = [
-#     {
-#       # rolearn  = eks_admins_iam_role.iam_role_arn # this_iam_role_arn ?
-#       rolearn = module.eks_admins_iam_role.iam_role_arn # this_iam_role_arn ?
-
-#       username = module.eks_admins_iam_role.iam_role_name # this_iam_role_name
-#       groups   = ["system:masters"]
-#     },
-#   ]
-
-#   aws_auth_users = [
-#     {
-#       userarn  = "arn:aws:iam::025444017694:user/wmaia"
-#       username = "wmaia"
-#       groups   = ["system:masters"]
-#     },
-#   ]
-# }
