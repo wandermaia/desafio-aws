@@ -15,7 +15,8 @@ permissions:
 jobs:
   terraform:
     uses: ./.github/workflows/ci-cd.yml
+    secrets:
+      dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+      dockerhub-token: ${{ secrets.DOCKERHUB_TOKEN }}
     with:
-      dockerhub-username: "${{ secrets.DOCKERHUB_USERNAME }}"
-      dockerhub-token: "${{ secrets.DOCKERHUB_TOKEN }}"
       aws-region: "us-east-1"
