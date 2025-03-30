@@ -1,0 +1,52 @@
+name: "APP - CI/CD"
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        type: string
+        required: true
+      aws-assume-role-arn:
+        type: string
+        required: true
+      aws-region:
+        type: string
+        required: true
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Autenticação no Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{secrets.DOCKERHUB_USERNAME}}
+          password: ${{secrets.DOCKERHUB_TOKEN}}
+
+
+      - name: Construção da imagem Docker
+        uses: docker/build-push-action@v6
+        with: 
+          context: ./src/go-calculator
+          file: ./src/go-calculator/Dockerfile
+          push: true
+          tags: |
+            wandermaia/calculadora-api:${{github.run_number}}
+            wandermaia/calculadora-api:latest
+
+      
+      # - name: Configure AWS Credencials
+      #   uses: aws-actions/configure-aws-credentials@v4
+      #   with:
+      #     role-to-assume: ${{ inputs.aws-assume-role-arn }}
+      #     role-session-name: GitHub_to_AWS_via_FederatedOID
+      #     aws-region: ${{ inputs.aws-region }}
+      
+
