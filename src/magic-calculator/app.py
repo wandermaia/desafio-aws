@@ -6,7 +6,7 @@ app = Flask(__name__)
 
 API_URL = os.environ.get('API_URL', 'http://localhost:7000/backend')  # Obtém a URL da API da variável de ambiente
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/frontend', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
         nome = request.form['nome']
