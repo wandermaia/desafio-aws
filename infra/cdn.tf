@@ -46,15 +46,12 @@ resource "aws_cloudfront_distribution" "main" {
 }
 
 
-
-
 resource "aws_cloudfront_origin_access_control" "main" {
   name                              = "s3-cloudfront-oac"
   origin_access_control_origin_type = "s3"
   signing_behavior                  = "always"
   signing_protocol                  = "sigv4"
 }
-
 
 
 data "aws_iam_policy_document" "cloudfront_oac_access" {
@@ -159,7 +156,7 @@ resource "aws_cloudfront_distribution" "cdn-alb" {
 
 
 resource "aws_cloudfront_cache_policy" "cache-control-headers-policy" {
-  comment     = "Policy for origins that return Cache-Control headers. Query strings are not included in the cache key."
+  comment     = "Policy for origins that return Cache-Control headers."
   default_ttl = "0"
   max_ttl     = "31536000"
   min_ttl     = "0"

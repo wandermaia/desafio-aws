@@ -1,3 +1,4 @@
+# Secuity group para permitir acesso ao RDS apenas d rede privada e na porta 3306
 module "security_group_mysql" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 5.0"
@@ -38,7 +39,7 @@ module "security_group_mysql" {
 }
 
 
-
+# security group para as instâncias EC2 de testes
 resource "aws_security_group" "security_group_ec2" {
 
   name        = local.security_group_name_ec2
@@ -67,7 +68,7 @@ resource "aws_security_group" "security_group_ec2" {
 
 }
 
-# Securitou group para alb cdn
+# Security group para alb cdn
 module "security_group_alb_cdn" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 5.0"
