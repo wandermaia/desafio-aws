@@ -24,8 +24,8 @@ jobs:
       db-password: ${{ secrets.DB_PASSWORD }}
     with:
       aws-region: "us-east-1"
-      eks-cluster-name: "eks-dev"
-      repository-name: "calculadora-api"
+      environment: "dev"
+      app-name: "calculadora-api"
       app-path: "src/go-calculator"
       app-namespace-kubernetes: "calculator"
 
