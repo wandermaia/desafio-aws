@@ -113,7 +113,7 @@ jobs:
 
           echo -e "\nColetando os dados para configurar o Target Group:\n"
           
-          SVC_NAME_NLB="${{ inputs.repository-name }}-nlb" #calculadora-api-nlb
+          SVC_NAME_NLB="${{ inputs.app-name }}-nlb" #calculadora-api-nlb
           echo -e "\n Service Name (NLB) - ${SVC_NAME_NLB}\n"
 
           NAMESPACE="${{ inputs.app-namespace-kubernetes }}"
