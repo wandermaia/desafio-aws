@@ -14,8 +14,6 @@ locals {
   geral_nodegroup_capacity_type  = var.capacity_type_ndgrp_geral
   security_group_name_mysql      = "security-group-mysql-${var.environment}"
   security_group_name_ec2        = "security-group-ec2-${var.environment}"
-  # account_id                     = var.aws_account_id
-  # user_eks_admin                 = var.user_eks_admin
 
   tags = {
     Projeto     = local.name

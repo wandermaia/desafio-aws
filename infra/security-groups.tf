@@ -1,3 +1,4 @@
+# Secuity group para permitir acesso ao RDS apenas d rede privada e na porta 3306
 module "security_group_mysql" {
   source  = "terraform-aws-modules/security-group/aws"
   version = "~> 5.0"
@@ -38,7 +39,7 @@ module "security_group_mysql" {
 }
 
 
-
+# security group para as instâncias EC2 de testes
 resource "aws_security_group" "security_group_ec2" {
 
   name        = local.security_group_name_ec2
@@ -67,30 +68,37 @@ resource "aws_security_group" "security_group_ec2" {
 
 }
 
+# Security group para alb cdn
+module "security_group_alb_cdn" {
+  source  = "terraform-aws-modules/security-group/aws"
+  version = "~> 5.0"
 
-# resource "aws_security_group" "security_group_eks" {
+  name        = "cdn-alb-${var.environment}-sg"
+  description = "CDN ALB security group"
+  vpc_id      = module.vpc.vpc_id
 
-#   name        = local.security_group_name_eks
-#   description = "security group para eks, quando houver a necessidade de alguma regra personalizada"
+  ingress_with_cidr_blocks = [
+    {
+      from_port   = 80
+      to_port     = 80
+      protocol    = "tcp"
+      description = "Acesso publico do load balancer do cdn"
+      cidr_blocks = "0.0.0.0/0"
+    }
+  ]
 
-#   vpc_id = module.vpc.vpc_id
+  egress_with_cidr_blocks = [
+    {
+      from_port   = 0
+      to_port     = 0
+      protocol    = "-1"
+      description = "Saida load balancer do cdn"
+      cidr_blocks = "0.0.0.0/0"
+    }
+  ]
 
-#   ingress {
-#     from_port   = 0
-#     to_port     = 0
-#     protocol    = "-1"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
+  tags = merge(local.tags, {
+    Name = "cdn-alb-${var.environment}-sg"
+  })
 
-#   egress {
-#     from_port   = 0
-#     to_port     = 0
-#     protocol    = "-1"
-#     cidr_blocks = ["0.0.0.0/0"]
-#   }
-
-#   tags = merge(local.tags, {
-#     Name = local.security_group_name_eks
-#   })
-
-# }
+}

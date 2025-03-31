@@ -18,9 +18,12 @@ module "vpc" {
   enable_dns_support   = true
 
   # Tags gerais
-  tags = local.tags
+  tags = merge(local.tags, {
+    Name = "vpc-${var.environment}"
+  })
 
-  # Tags para EKS
+
+  # Tags das subnets para EKS
   private_subnet_tags = {
     "kubernetes.io/role/internal-elb" : "1",
     "kubernetes.io/cluster/eks-${var.environment}" : "shared"

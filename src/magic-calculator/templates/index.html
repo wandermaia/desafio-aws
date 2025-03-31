@@ -2,20 +2,73 @@
 <html>
 <head>
     <title>Magic Calculator</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: sans-serif;
+        }
+        .calculator {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 300px;
+        }
+        .calculator h1 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .calculator p {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .calculator label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .calculator input[type="text"],
+        .calculator input[type="number"] {
+            width: calc(100% - 12px);
+            padding: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .calculator input[type="submit"] {
+            background-color: #667eea;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+        .calculator input[type="submit"]:hover {
+            background-color: #764ba2;
+        }
+    </style>
 </head>
 <body>
-    <h1>Magic Calculator, a magia dos números acontecendo na sua frente!</h1>
-    <form method="POST">
-        <label for="nome">Nome:</label>
-        <input type="text" name="nome" required><br><br>
-        <label for="operador1">Primeiro Número:</label>
-        <input type="number" name="operador1" required><br><br>
-        <label for="operador2">Segundo Número:</label>
-        <input type="number" name="operador2" required><br><br>
-        <button type="submit">Calcular</button>
-    </form>
-    {% if error %}
-    <p style="color: red;">{{ error }}</p>
-    {% endif %}
+    <div class="calculator">
+        <h1>Magic Calculator</h1>
+        <p>A Magia dos Números Acontecendo na Sua Frente!</p>
+        {% if error %}
+            <p style="color: red;">{{ error }}</p>
+        {% endif %}
+        <form method="post">
+            <label for="nome">Nome:</label><br>
+            <input type="text" id="nome" name="nome"><br><br>
+            <label for="operador1">Primeiro Número:</label><br>
+            <input type="number" id="operador1" name="operador1" value="0"><br><br>
+            <label for="operador2">Segundo Número:</label><br>
+            <input type="number" id="operador2" name="operador2" value="0"><br><br>
+            <input type="submit" value="Calcular">
+        </form>
+    </div>
 </body>
 </html>

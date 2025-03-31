@@ -96,6 +96,14 @@ https://spacelift.io/blog/terraform-alb
 https://registry.terraform.io/modules/terraform-aws-modules/alb/aws/latest
 
 
+https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_target_group
+
+https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lb_target_group_attachment
+
+
+https://awscli.amazonaws.com/v2/documentation/api/latest/reference/elbv2/index.html#cli-aws-elbv2
+
+
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -134,6 +142,11 @@ terraform workspace select dev || terraform workspace new dev && terraform destr
 aws eks --region us-east-1 update-kubeconfig --name eks-dev
 
 
+sudo apt update
+sudo apt install apache2
+sudo systemctl status apache2
+
+apt install dnsutils
 
 
 ACtions AWS
@@ -182,6 +195,27 @@ https://airwalkreply.com/how-to-restrict-incoming-aws-alb-traffic-to-cloudfront-
 
 Tabela de Regiões da AWS que permitem o uso de origens de VPC
 https://docs.aws.amazon.com/pt_br/AmazonCloudFront/latest/DeveloperGuide/private-content-vpc-origins.html#vpc-origins-supported-regions
+
+
+
+aws elbv2 register-targets \
+    --target-group-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/my-tcp-ip-targets/8518e899d173178f \
+    --targets Id=10.0.1.15 Id=10.0.1.23
+
+
+aws elbv2 describe-target-groups \
+    --load-balancer-arn arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/my-load-balancer/50dc6c495c0c9188 \
+    --query TargetGroups[*].TargetGroupName
+
+aws elbv2 describe-target-groups --query "TargetGroups[*].{TargetGroupName:TargetGroupName,TargetGroupArn:TargetGroupArn}" --profile quality
+
+
+aws elbv2 describe-target-groups --query TargetGroups[*].TargetGroupArn --profile quality | awk -F'"' '{print $2}'
+
+
+CDN
+
+https://docs.aws.amazon.com/cli/latest/userguide/cli_cloudfront_code_examples.html
 
 
 
@@ -242,4 +276,26 @@ ec2
 750 horas por mês de instância t2.micro ou t3.micro Windows, dependendo da região
 
 
-teste
+++++++++++++++++++++++++++++++
+
+RDS
+
+
+#https://github.com/terraform-aws-modules/terraform-aws-rds/blob/v1.14.0/examples/complete-postgres/main.tf
+
+# https://registry.terraform.io/modules/terraform-aws-modules/rds/aws/latest
+# 
+# https://github.com/terraform-aws-modules/terraform-aws-rds/blob/master/examples/complete-mysql/main.tf
+
+# https://spacelift.io/blog/terraform-aws-rds
+
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_instance
+
+
+
+
+OTEL
+
+https://opentelemetry.io/docs/zero-code/python/
+
+https://github.com/open-telemetry/opentelemetry-go-instrumentation/blob/main/docs/getting-started.md

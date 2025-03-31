@@ -1,11 +1,11 @@
-name: "API - CALCULADORA DEV DEPLOY"
+name: "FRONT - MAGIC-CALCULATOR DEV DEPLOY"
 
 on:
   push:
     branches: ["develop"]
-    paths: ["src/go-calculator/**"]
+    paths: ["src/magic-calculator/**"]
   workflow_dispatch:
-    
+
 
 # Permission can be added at job level or workflow level    
 permissions:
@@ -25,7 +25,6 @@ jobs:
     with:
       aws-region: "us-east-1"
       environment: "dev"
-      app-name: "calculadora-api"
-      app-path: "src/go-calculator"
-      app-namespace-kubernetes: "calculator"
-
+      app-name: "magic-calculator"
+      app-path: "src/magic-calculator"
+      app-namespace-kubernetes: "magic"

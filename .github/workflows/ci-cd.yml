@@ -6,7 +6,16 @@ on:
       aws-region:
         type: string
         required: true
-      eks-cluster-name:
+      environment:
+        type: string
+        required: true
+      app-name:
+        type: string
+        required: true
+      app-path:
+        type: string
+        required: true
+      app-namespace-kubernetes:
         type: string
         required: true
     secrets:
@@ -18,6 +27,12 @@ on:
         required: true
       aws-secret-access-key:
         required: true
+      db-user:
+        required: true
+      db-password:
+        required: true
+
+
 
 jobs:
   CI:
@@ -39,22 +54,12 @@ jobs:
       - name: Construção da imagem Docker
         uses: docker/build-push-action@v6
         with: 
-          context: ./src/go-calculator
-          file: ./src/go-calculator/Dockerfile
+          context: ./${{ inputs.app-path }}
+          file: ./${{ inputs.app-path }}/Dockerfile
           push: true
           tags: |
-            wandermaia/calculadora-api:${{ github.run_number }}
-            wandermaia/calculadora-api:latest
-
-      
-      # - name: Configure AWS Credencials
-      #   uses: aws-actions/configure-aws-credentials@v4
-      #   with:
-      #     role-to-assume: ${{ inputs.aws-assume-role-arn }}
-      #     role-session-name: GitHub_to_AWS_via_FederatedOID
-      #     aws-region: ${{ inputs.aws-region }}
-      
-
+            wandermaia/${{ inputs.app-name }}:${{ github.run_number }}
+            wandermaia/${{ inputs.app-name }}:latest
 
   CD:
     runs-on: ubuntu-latest
@@ -66,6 +71,21 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+
+      # Essa action troca os valores entre __ pelas variáveis informadas nos arquivos da pasta.
+      # https://github.com/marketplace/actions/expand-tokens
+      #
+      - uses: sandersaares-actions/expand-tokens@master
+        env:
+          USUARIO_BANCO: ${{ secrets.db-user }}
+          SENHA_BANCO: ${{ secrets.db-password }}
+          IMAGEM: wandermaia/${{ inputs.app-name }}:${{ github.run_number }} # imagem no formato wandermaia/calculadora-api:3
+        with:
+          path: ${{ inputs.app-path }}
+          recursive: true
+
+
+      # Configurando as credenciais da AWS para acesso ao EKS e utlização do AWS CLI nos passos posteriores
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -73,25 +93,52 @@ jobs:
           aws-secret-access-key: ${{ secrets.aws-secret-access-key }}
           aws-region: ${{ inputs.aws-region }}
 
+
+      # Aplicando os manifestos no eks
       - name: Deploy to EKS
-        working-directory: ./src/go-calculator
+        working-directory: ./${{ inputs.app-path }}
         run: |
-          aws eks update-kubeconfig --name ${{ inputs.eks-cluster-name }} --region ${{ inputs.aws-region }}
-          kubectl get ns
-          kubectl apply -f ./k8s/manifesto.yaml
+          aws eks update-kubeconfig --name "eks-${{ inputs.environment }}" --region ${{ inputs.aws-region }}
+
+          echo -e "\nArquivo de maifesto que será aplicado:\n"
+          cat ./k8s/manifesto.yaml
           
+          kubectl apply -f ./k8s/manifesto.yaml
 
-#desafio-aws/src/go-calculator/k8s/manifesto.yaml
 
-#
-#     # Essa action troca os valores entre __ pelas variáveis informadas nos arquivos da pasta.
-#     # https://github.com/marketplace/actions/expand-tokens
-#
-#     - uses: sandersaares-actions/expand-tokens@master
-#       env:
-#         versionstring: 1.2.3.4
-#         best_day_of_week: friday
-#         secret_ingredient: ${{ secrets.secret_ingredient }}
-#       with:
-#         path: src
-#         recursive: true
+      # Configurando os IPs do Load Balancer no Target Group    
+      - name: Configurando o Target Group do ALB do CDN
+        working-directory: ./${{ inputs.app-path }}
+        run: |
+
+          echo -e "\nColetando os dados para configurar o Target Group:\n"
+          
+          # Adicionado esse tempo apenas para aguardar a criação inicial dos recursos no kubernetes antes de realizar a coleta dos dados.
+          sleep 10
+
+          SVC_NAME_NLB="${{ inputs.app-name }}-nlb" #calculadora-api-nlb
+          echo -e "\n Service Name (NLB) - ${SVC_NAME_NLB}\n"
+
+          NAMESPACE="${{ inputs.app-namespace-kubernetes }}"
+          echo -e "\n Namespace - ${NAMESPACE}\n"
+
+          TG_NAME="tg-${{ inputs.app-name }}-${{ inputs.environment }}" # "tg-calculadora-api-dev"
+          echo -e "\n Target Group Name - ${TG_NAME}\n"
+
+          # Coletando o endereço de DNS do load balancer que está associado so service do kubernetes
+          NLB=`kubectl get svc -n ${NAMESPACE} | grep ${SVC_NAME_NLB} | awk '{print $4}'`
+          echo -e "\n DNS do Network Load Balancer - ${NLB}\n"
+
+          # Segregando os IPs. Como estão sendo utlizadas 3 subnets, serão 3 IPs
+          IPS=`dig ${NLB} | grep "ANSWER SECTION" -A 3 | grep -v ANSWER| awk '{print $5}'`
+          echo -e "\n IPs do Network Load Balancer - ${IPS}\n"
+
+          # Convertendo a string de IPs para um array de IPs. Isso vai facilitar a manipulação dos IPs posteriormente
+          LISTA_IPS=($IPS)
+
+          TG_ARN=`aws elbv2 describe-target-groups --query TargetGroups[*].TargetGroupArn | awk -F'"' '{print $2}' | grep ${TG_NAME}`
+          echo -e "\n ARN do Target Group - ${TG_ARN}\n"
+
+          # Adicionando os IPs ao Target Group. Esse comando não precisa de validação. Se o IP já estiver associado, ele simplesmente ignora.
+          aws elbv2 register-targets --target-group-arn ${TG_ARN} --targets Id=${LISTA_IPS[0]} Id=${LISTA_IPS[1]} Id=${LISTA_IPS[2]} 
+
