@@ -34,7 +34,7 @@ def index():
             return render_template('error.html', error=str(e))
     return render_template('index.html')
 
-@app.route('/voltar')
+@app.route('/frontend/voltar')
 def voltar():
   return redirect(url_for('index'))
 
