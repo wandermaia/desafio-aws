@@ -15,6 +15,9 @@ on:
       app-path:
         type: string
         required: true
+      app-namespace-kubernetes:
+        type: string
+        required: true
     secrets:
       dockerhub-username:
         required: true
@@ -103,6 +106,13 @@ jobs:
           
           kubectl apply -f ./k8s/manifesto.yaml
 
-          echo -e "\nTestando AWS CLI:\n"
-          aws s3 ls
           
+      - name: Configure ALB to Ingress
+        working-directory: ./${{ inputs.app-path }}
+        run: |
+          # route53, target groups
+
+          echo -e "\nTeste coleta ingress:\n"
+          
+          ALB_INGRESS=`kubectl get ingress -n ${{ inputs.app-namespace-kubernetes }} --no-headers | awk '{print $4}'`
+          echo -e "${ALB_INGRESS}"

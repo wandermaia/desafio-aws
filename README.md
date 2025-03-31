@@ -93,3 +93,7 @@ https://docs.aws.amazon.com/pt_br/vpc/latest/userguide/vpc-security-groups.html
 
 Docker - Multi-stage builds
 https://docs.docker.com/build/building/multi-stage/
+
+
+Automate CloudFront updates when load balancer endpoints change by using Terraform
+https://docs.aws.amazon.com/prescriptive-guidance/latest/patterns/automate-cloudfront-updates-when-load-balancer-endpoints-change.html
