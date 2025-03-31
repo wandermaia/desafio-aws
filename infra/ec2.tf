@@ -32,6 +32,9 @@
 
 
 
+
+
+
 # # instância windows na rede pública
 # module "ec2-instance-public" {
 #   source  = "terraform-aws-modules/ec2-instance/aws"
@@ -61,4 +64,35 @@
 #   tags = merge(local.tags, {
 #     Name = "ec2-public-windows-${var.environment}"
 #   })
+# }
+
+
+
+
+# resource "aws_instance" "instance_a" {
+
+#   instance_type = "t2.micro"
+#   subnet_id     = element(module.vpc.private_subnets, 0)
+#   ami           = "ami-084568db4383264d4"
+#   key_name      = "desafio-aws"
+#   iam_instance_profile = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+
+#   security_groups = [aws_security_group.security_group_ec2.id]
+
+#   user_data = <<-EOF
+#              #!/bin/bash
+#              sudo apt-get update
+#              sudo apt-get install -y nginx
+#              sudo systemctl start nginx
+#              sudo systemctl enable nginx
+#              echo '<!doctype html>
+#              <html lang="en"><h1>Home page!</h1></br>
+#              <h3>(Instance A)</h3>
+#              </html>' | sudo tee /var/www/html/index.html
+#              EOF
+
+#   tags = merge(local.tags, {
+#     Name = "ec2-private-web-${var.environment}"
+#   })
+
 # }
