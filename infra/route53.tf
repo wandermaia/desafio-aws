@@ -1,3 +1,4 @@
+# Zona privada para testes da aplicação
 resource "aws_route53_zone" "private" {
   name = "wandermaia.com"
 
@@ -6,7 +7,7 @@ resource "aws_route53_zone" "private" {
   }
 }
 
-resource "aws_route53_record" "teste" {
+resource "aws_route53_record" "teste-dns" {
   zone_id = aws_route53_zone.private.zone_id
   name    = "teste.wandermaia.com"
   type    = "A"
@@ -15,14 +16,7 @@ resource "aws_route53_record" "teste" {
 }
 
 
-resource "aws_route53_record" "teste-cname" {
-  zone_id = aws_route53_zone.private.zone_id
-  name    = "private-CNAME.wandermaia.com"
-  type    = "CNAME"
-  ttl     = 300
-  records = ["dev.wandermaia.com"]
-}
-
+# CNAME que será associado com o RDS do mysql
 resource "aws_route53_record" "dns-mysql" {
   zone_id = aws_route53_zone.private.zone_id
   name    = "mysql-${var.environment}.wandermaia.com"
@@ -31,3 +25,22 @@ resource "aws_route53_record" "dns-mysql" {
   records = ["${aws_db_instance.db-mysql.address}"]
 }
 
+
+# CNAME que será associado com a API
+resource "aws_route53_record" "dns-calculadora-api" {
+  zone_id = aws_route53_zone.private.zone_id
+  name    = "calculadora-api-${var.environment}.wandermaia.com"
+  type    = "CNAME"
+  ttl     = 300
+  records = ["${aws_lb.proxy.dns_name}"]
+}
+
+
+# CNAME que será associado com o Frontend
+resource "aws_route53_record" "dns-magic-calculator" {
+  zone_id = aws_route53_zone.private.zone_id
+  name    = "magic-calculator-${var.environment}.wandermaia.com"
+  type    = "CNAME"
+  ttl     = 300
+  records = ["${aws_lb.proxy.dns_name}"]
+}

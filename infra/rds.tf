@@ -1,3 +1,4 @@
+# RDS que será utilizado pela aplicação
 resource "aws_db_instance" "db-mysql" {
   identifier        = "rds-msql-${var.environment}"
   allocated_storage = 10
@@ -13,17 +14,9 @@ resource "aws_db_instance" "db-mysql" {
 
   skip_final_snapshot = true
 
-  tags = local.tags
+  # tags = local.tags
+  tags = merge(local.tags, {
+    Name = "rds-msql-${var.environment}"
+  })
 }
 
-
-
-#https://github.com/terraform-aws-modules/terraform-aws-rds/blob/v1.14.0/examples/complete-postgres/main.tf
-
-# https://registry.terraform.io/modules/terraform-aws-modules/rds/aws/latest
-# 
-# https://github.com/terraform-aws-modules/terraform-aws-rds/blob/master/examples/complete-mysql/main.tf
-
-# https://spacelift.io/blog/terraform-aws-rds
-
-# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/db_instance

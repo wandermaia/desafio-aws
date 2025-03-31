@@ -10,11 +10,6 @@ variable "regiao" {
   nullable    = false
 }
 
-# variable "aws_account_id" {
-#   description = "Conta utilizada para a realização das configurações"
-#   type        = string
-#   nullable    = false
-# }
 variable "vpc_cidr" {
   description = "CIDR que será utilizado para criar a VPC"
   type        = string
@@ -59,8 +54,3 @@ variable "geral_max_size" {
   nullable    = false
 }
 
-# variable "user_eks_admin" {
-#   description = "Lista de usuários que serão configurados para serem administradores do eks"
-#   type        = list(string)
-#   nullable    = false
-# }

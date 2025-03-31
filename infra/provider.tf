@@ -4,17 +4,13 @@ provider "aws" {
 }
 
 terraform {
-  # required_providers {
-  #   aws = {
-  #     source  = "hashicorp/aws"
-  #     version = "~> 5.0"
-  #   }
-  # }
 
+  // As configurações do bucket são ajustadas em tempo de execução da pipeline
+  backend "s3" {}
   required_providers {
     aws = {
-      source  = "hashicorp/aws"
-      version = ">= 5.61"
+      source = "hashicorp/aws"
+      version = ">= 5.83"
     }
 
     helm = {
@@ -29,6 +25,7 @@ terraform {
   }
 
 }
+
 
 provider "kubernetes" {
   host                   = module.eks_cluster.cluster_endpoint

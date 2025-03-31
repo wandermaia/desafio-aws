@@ -18,7 +18,10 @@ module "vpc" {
   enable_dns_support   = true
 
   # Tags gerais
-  tags = local.tags
+  tags = merge(local.tags, {
+    Name = "vpc-${var.environment}"
+  })
+
 
   # Tags para EKS
   private_subnet_tags = {
