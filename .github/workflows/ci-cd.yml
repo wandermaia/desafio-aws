@@ -84,6 +84,7 @@ jobs:
           path: ${{ inputs.app-path }}
           recursive: true
 
+
       # Configurando as credenciais da AWS para acesso ao EKS e utlização do AWS CLI nos passos posteriores
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -105,7 +106,6 @@ jobs:
           kubectl apply -f ./k8s/manifesto.yaml
 
 
-
       # Configurando os IPs do Load Balancer no Target Group    
       - name: Configurando o Target Group do ALB do CDN
         working-directory: ./${{ inputs.app-path }}
@@ -113,7 +113,6 @@ jobs:
 
           echo -e "\nColetando os dados para configurar o Target Group:\n"
           
-
           SVC_NAME_NLB="${{ inputs.repository-name }}-nlb" #calculadora-api-nlb
           echo -e "\n Service Name (NLB) - ${SVC_NAME_NLB}\n"
 
@@ -139,6 +138,4 @@ jobs:
 
           # Adicionando os IPs ao Target Group. Esse comando não precisa de validação. Se o IP já estiver associado, ele simplesmente ignora.
           aws elbv2 register-targets --target-group-arn ${TG_ARN} --targets Id=${LISTA_IPS[0]} Id=${LISTA_IPS[1]} Id=${LISTA_IPS[2]} 
-
-
 
