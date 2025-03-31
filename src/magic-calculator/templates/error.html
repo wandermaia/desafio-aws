@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Resultado</title>
+    <title>Erro</title>
     <style>
         body {
             background: linear-gradient(135deg, #667eea, #764ba2);
@@ -12,7 +12,7 @@
             margin: 0;
             font-family: sans-serif;
         }
-        .result {
+        .error {
             background-color: white;
             padding: 30px;
             border-radius: 10px;
@@ -20,7 +20,7 @@
             width: 300px;
             text-align: center;
         }
-        .result a {
+        .error a {
             background-color: #667eea;
             color: white;
             padding: 10px 15px;
@@ -29,15 +29,15 @@
             cursor: pointer;
             text-decoration: none;
         }
-        .result a:hover {
+        .error a:hover {
             background-color: #764ba2;
         }
     </style>
 </head>
 <body>
-    <div class="result">
-        <h1>Resultado</h1>
-        <p>O resultado é: {{ result }}</p>
+    <div class="error">
+        <h1>Erro</h1>
+        <p>Ocorreu um erro: {{ error }}</p>
         <a href="{{ url_for('voltar') }}">Voltar</a>
     </div>
 </body>
