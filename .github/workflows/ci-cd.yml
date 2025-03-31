@@ -113,6 +113,9 @@ jobs:
 
           echo -e "\nColetando os dados para configurar o Target Group:\n"
           
+          # Adicionado esse tempo apenas para aguardar a criação inicial dos recursos no kubernetes antes de realizar a coleta dos dados.
+          sleep 10
+
           SVC_NAME_NLB="${{ inputs.app-name }}-nlb" #calculadora-api-nlb
           echo -e "\n Service Name (NLB) - ${SVC_NAME_NLB}\n"
 
