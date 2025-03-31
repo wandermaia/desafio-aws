@@ -84,24 +84,25 @@ spec:
     tier: frontend
   type: ClusterIP
 ---
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: v1
+kind: Service
 metadata:
-  namespace: magic
-  name: ingress-alb-magic-calculator
   annotations:
-    alb.ingress.kubernetes.io/scheme: internal
-    alb.ingress.kubernetes.io/target-type: ip
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: tcp
+    service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
+    service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+    service.beta.kubernetes.io/aws-load-balancer-type: nlb
+  labels:
+    app: magic-calculator
+  name: magic-calculator-nlb
+  namespace: magic
 spec:
-  ingressClassName: alb
-  rules:
-    - http:
-        paths:
-        - path: /
-          pathType: Prefix
-          frontend:
-            service:
-              name: magic-calculator
-              port:
-                number: 80
-
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 5000
+  selector:
+    app: magic-calculator
+    tier: frontend
+  type: LoadBalancer
