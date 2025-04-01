@@ -38,14 +38,84 @@ Assim, optei por fazer utilizando a seguinte estrutura:
 - Signoz (Solução de APM opensource) para monitoramento e alertas.
 
 
-O projeto é dividido basicamente em três partes:
+
+## Estrutura do Projeto
+
+
+Para a execução do projeto, foi criado um único repositório para hospedar todo o código. A seguir está a estrutura de arquivos e diretórios utilizado no projeto:
+
+```bash
+wander@bsnote283:~/desafio-aws$ tree
+.
+├── DESCRIÇÃO_DESAFIO.md
+├── img
+│   └── repository.drawio.png
+├── infra
+│   ├── alb.tf
+│   ├── cdn.tf
+│   ├── destroy_config.json
+│   ├── ec2.tf
+│   ├── eks.tf
+│   ├── envs
+│   │   ├── dev
+│   │   │   ├── K8s-Infra-value.yaml
+│   │   │   └── terraform.tfvars
+│   │   └── prd
+│   │       ├── K8s-Infra-value.yaml
+│   │       └── terraform.tfvars
+│   ├── main.tf
+│   ├── outputs.tf
+│   ├── provider.tf
+│   ├── rds.tf
+│   ├── route53.tf
+│   ├── security-groups.tf
+│   ├── signoz-helm.tf
+│   ├── variables.tf
+│   └── vpc.tf
+├── README.md
+└── src
+    ├── docker-compose.yml
+    ├── go-calculator
+    │   ├── Dockerfile
+    │   ├── go.mod
+    │   ├── go.sum
+    │   ├── k8s
+    │   │   └── manifesto.yaml
+    │   ├── main.go
+    │   └── testes
+    │       └── calculator.http
+    ├── magic-calculator
+    │   ├── app.py
+    │   ├── Dockerfile
+    │   ├── k8s
+    │   │   └── manifesto.yaml
+    │   ├── requirements.txt
+    │   └── templates
+    │       ├── error.html
+    │       ├── index.html
+    │       └── result.html
+    └── README.md
+
+12 directories, 38 files
+wander@bsnote283:~/desafio-aws$ 
+
+
+```
+
+O projeto pode ser dividido basicamente em três partes: Pipelines (workflows), Infraestrutura e Aplicações. A seguir está a análise de cada item.
+
+> **OBSERVAÇÃO:**
+>
+> - Os arquivos de Aplicação e Infraestrutura ficaram no mesmo repositório por conveniência. Em ambientes reais, principalmente se a infraestrutura não for exclusiva da aplicação em questão, é recomendado que estejam em repositórios separados.
+>
+
+
+
+Dessa forma, ele pode ser analisado em três partes: Pipelines, Infraestrutura e Aplicações.
 
 - Repositório e Pipelines
     - visão geral
-    - Serão detalhadas juntamente com as partes interessadas.
-
-![repositorio](img/repository.drawio.png)
-
+    - 
 
 - Infraestrutura
     VPC
@@ -55,6 +125,16 @@ O projeto é dividido basicamente em três partes:
 - Aplicação
     - Frontend
     - API
+
+
+## Repostiórios e Pipelines (Workflows)
+
+Para hospedar o projeto, foi utilizado [este](https://github.com/wandermaia/desafio-aws) repositório do GitHub.
+
+![repositorio](img/repository.drawio.png)
+
+
+
 
 ## Tecnologias Utilizadas
 
