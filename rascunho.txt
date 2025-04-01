@@ -160,6 +160,13 @@ docker rm $(docker ps -a -q)
 
 
 
+curl http://internal-k8s-calculat-ingressa-1f96086ccc-1451221242.us-east-1.elb.amazonaws.com/backend
+
+while true; do curl -X POST http://internal-k8s-calculat-ingressa-1f96086ccc-1451221242.us-east-1.elb.amazonaws.com/backend -H "Content-Type: application/json" -d '{"nome":"João", "operador1":5, "operador2":10}'; sleep 1; done;
+
+
+
+
 ACtions AWS
 
 https://github.com/marketplace?query=aws-actions
