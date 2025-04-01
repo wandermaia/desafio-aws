@@ -58,7 +58,7 @@ jobs:
           file: ./${{ inputs.app-path }}/Dockerfile
           push: true
           tags: |
-            wandermaia/${{ inputs.app-name }}:${{ github.run_number }}
+            wandermaia/${{ inputs.app-name }}:{{ inputs.environment }}-${{ github.run_number }}
             wandermaia/${{ inputs.app-name }}:latest
 
   CD:
