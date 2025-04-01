@@ -112,3 +112,4 @@ spec:
     app: calculadora-api
     tier: backend
   type: LoadBalancer
+

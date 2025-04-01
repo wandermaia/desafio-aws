@@ -106,3 +106,4 @@ spec:
     app: magic-calculator
     tier: frontend
   type: LoadBalancer
+
