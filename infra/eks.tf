@@ -136,7 +136,7 @@ module "eks_blueprints_addons" {
 
   # Para o caso do ingress controller, é necessário adicionar a tag nas subnets que o cluster irá utilizar:
   # kubernetes.io/role/internal-elb 1
-  enable_ingress_nginx = true
+  # enable_ingress_nginx = true
 
 }
 

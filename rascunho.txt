@@ -30,8 +30,15 @@ Como criar uma pipeline CI/CD com GitHub Actions | #DevOpsNaVeia 003
 https://www.youtube.com/watch?v=TKwXC5qSjkE
 
 
+
++++++++++++++++++++++++++++++++++++++++++
+
+
+vpc
+
 How to Build AWS VPC using Terraform – Step by Step
 https://spacelift.io/blog/terraform-aws-vpc
+https://medium.com/@bryanJR/vpc-aws-architecture-diagrams-265e46256243
 
 
 Creating a Secure and Scalable AWS VPC with Terraform
@@ -50,6 +57,8 @@ https://www.youtube.com/watch?v=cQlS0QpGYSk
 
 Native lock terraform
 https://rafaelmedeiros94.medium.com/goodbye-dynamodb-terraform-s3-backend-now-supports-native-locking-06f74037ad39
+
+
 
 +++++++++++++++++++++++++++++++++
 
@@ -322,3 +331,18 @@ https://github.com/open-telemetry/opentelemetry-go-instrumentation/blob/main/doc
 
 https://www.dash0.com/blog/exploring-the-opentelemetry-go-automatic-instrumentation-powered-by-ebpf-a-deep-dive
 https://github.com/open-telemetry/opentelemetry-go-instrumentation/blob/main/docs/getting-started.md
+
+https://opentelemetry.io/docs/platforms/kubernetes/operator/automatic/
+https://stackoverflow.com/questions/78566982/how-to-pass-enable-go-instrumentation-flag-to-opentelemetry-operator
+https://www.cloudraft.io/blog/open-telemetry-auto-instrumentation
+
+https://blog.devgenius.io/lets-learn-about-auto-instrumentation-with-the-otel-operator-2cdc8a532514
+
+
+
+API GW, LAMBDA E S3
+https://medium.com/awsugsp/hospedagem-de-sites-est%C3%A1ticos-na-aws-com-s3-api-gateway-e-lambda-ef5ccdcc3311
+
+
+
+
