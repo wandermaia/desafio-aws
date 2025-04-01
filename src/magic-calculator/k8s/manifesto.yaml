@@ -9,6 +9,9 @@ kind: Deployment
 metadata:
   namespace: magic
   name: magic-calculator
+  labels:
+    app: magic-calculator
+    app.kubernetes.io/name: magic-calculator
 spec:
   replicas: 2
   selector:
