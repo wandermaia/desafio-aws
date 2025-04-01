@@ -346,3 +346,11 @@ https://medium.com/awsugsp/hospedagem-de-sites-est%C3%A1ticos-na-aws-com-s3-api-
 
 
 
+Dicas para relatório
+
+
+Entenda o problema
+Explique seu repositório
+Destaque para a lógica
+Demonstre conhecer a tecnologia utilizada
+Lembre-se das melhores práticas
