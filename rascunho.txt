@@ -149,6 +149,17 @@ sudo systemctl status apache2
 apt install dnsutils
 
 
+Stop all the containers
+
+docker stop $(docker ps -a -q)
+
+Remove all the containers
+
+docker rm $(docker ps -a -q)
+
+
+
+
 ACtions AWS
 
 https://github.com/marketplace?query=aws-actions
@@ -298,4 +309,9 @@ OTEL
 
 https://opentelemetry.io/docs/zero-code/python/
 
+https://github.com/open-telemetry/opentelemetry-go-instrumentation/blob/main/docs/getting-started.md
+
+
+
+https://www.dash0.com/blog/exploring-the-opentelemetry-go-automatic-instrumentation-powered-by-ebpf-a-deep-dive
 https://github.com/open-telemetry/opentelemetry-go-instrumentation/blob/main/docs/getting-started.md
