@@ -25,12 +25,35 @@ module "vpc" {
 
   # Tags das subnets para EKS
   private_subnet_tags = {
+    Name = "private-subnet-vpc-${var.environment}"
     "kubernetes.io/role/internal-elb" : "1",
     "kubernetes.io/cluster/eks-${var.environment}" : "shared"
   }
 
   public_subnet_tags = {
+    Name = "public-subnet-vpc-${var.environment}"
     "kubernetes.io/role/elb" : "1",
     "kubernetes.io/cluster/eks-${var.environment}" : "shared"
   }
+  database_subnet_tags = {
+    Name = "database-subnet-vpc-${var.environment}"
+  }
+
+  private_route_table_tags = {
+    Name = "private-route-table-vpc-${var.environment}"
+  }
+
+  public_route_table_tags = {
+    Name = "public-route-table-vpc-${var.environment}"
+  }
+
+
+  igw_tags = {
+    Name = "internet-gateway-vpc-${var.environment}"
+  }
+
+  nat_gateway_tags = {
+    Name = "nat-gateway-vpc-${var.environment}"
+  }
+
 }
