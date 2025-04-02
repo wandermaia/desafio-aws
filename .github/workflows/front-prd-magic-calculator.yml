@@ -27,4 +27,5 @@ jobs:
       environment: "prd"
       app-name: "magic-calculator"
       app-path: "src/magic-calculator"
+      app-dockerhub-repository: "magic-calculator"
       app-namespace-kubernetes: "magic"

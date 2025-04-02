@@ -27,5 +27,6 @@ jobs:
       environment: "dev"
       app-name: "calculadora-api"
       app-path: "src/go-calculator"
+      app-dockerhub-repository: "dev-calculadora-api"
       app-namespace-kubernetes: "calculator"
 

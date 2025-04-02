@@ -15,6 +15,9 @@ on:
       app-path:
         type: string
         required: true
+      app-dockerhub-repository:
+        type: string
+        required: true
       app-namespace-kubernetes:
         type: string
         required: true
@@ -58,8 +61,8 @@ jobs:
           file: ./${{ inputs.app-path }}/Dockerfile
           push: true
           tags: |
-            wandermaia/${{ inputs.app-name }}:${{ inputs.environment }}-${{ github.run_number }}
-            wandermaia/${{ inputs.app-name }}:latest
+            wandermaia/${{ inputs.app-dockerhub-repository }}:${{ inputs.environment }}-${{ github.run_number }}
+            wandermaia/${{ inputs.app-dockerhub-repository }}:latest
 
   CD:
     runs-on: ubuntu-latest
@@ -79,7 +82,7 @@ jobs:
         env:
           USUARIO_BANCO: ${{ secrets.db-user }}
           SENHA_BANCO: ${{ secrets.db-password }}
-          IMAGEM: wandermaia/${{ inputs.app-name }}:${{ github.run_number }} # imagem no formato wandermaia/calculadora-api:3
+          IMAGEM: wandermaia/${{ inputs.app-dockerhub-repository }}:${{ inputs.environment }}-${{ github.run_number }} # imagem no formato wandermaia/calculadora-api:dev-3
         with:
           path: ${{ inputs.app-path }}
           recursive: true

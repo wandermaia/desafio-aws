@@ -223,7 +223,41 @@ jobs:
 
 ```
 
+
+### Workflow "APPS - CI/CD" (ci-cd.yml)
+
+
+Esse workflow é responsável pelo processo de CI/CD das aplicações. Ele é composto por dois jobs: job "CI", que é responsável por gerar a imagem do container e publicar no DockerHub e o jov "CD" que é responsável por ajustar o manifesto kubernestes e realizar o deploy da aplicação.
+
+
+O `Job CI` gera uma imagem de container a partir do Dockerfile, aplica as tags da `latest` e a versão gerada. Como estamos utilizando um único repositório no DockerHub para DEV e PRD, a tag da imagem é gerada utilizando duas variáveis: `environment`, que é recebida por parâmetro, definindo qual ambiente está sendo executado, e `run_number`, que é uma variável do próprio GihubActions que é gerada com o número da execução do workflow. Dessa forma, é possível diferenciar se as imagens foram geradas para PRD ou DEV.
+
+
+O `Job CD` atualiza o manifesto kubernetes com os valores necessários e aplica no cluster EKS. Depois disso, ele tem um passo de configurar o Target Group do ALB com os IPs do load balancer gerado para o service do kubernetes declarado no arquivo de manifesto. Esse step está abordado no item de `Infraestrutura` deste documento.
+
+
+### Workflow "INFRA - CI/CD" (terraform.yml)
+
+
+Esse workflow é responsável pelo processo de criação ou destruição da infraestrutura. Para a implementação desse workflow foi criado o arquivo `infra/destroy_config.json` que contém uma flag para cada ambiente (DEV e PRD) que sinaliza se é para destruir o ambiente ou não. Essa flag é considerada nos steps do workflow para definir se está criando/atualizando ou destruindo a infraestrutura. A seguir está um exemplo do formato desse arquivo:
+
+```json
+{
+    "dev": true,
+    "prd": true
+}
+
+```
+As configurações são definidas com base no workspace do terraform para definir se o ambiente executado é homologação ou produção.
+
+
 ### Integração GitHub Actions com AWS
+
+A integraçao inicialmente foi realizada usando openidentity, mas tive problemas com permissões no cluster do EKS e precisei voltar a usar acess_key e secret_key para não perder muito tempo.
+
+Essa forma de conexão, utilizando o openidentity, é mais segura e restrita e deve ser preferencialmente utilizada. 
+
+
 
 
 
