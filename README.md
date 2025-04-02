@@ -105,17 +105,17 @@ O projeto pode ser dividido basicamente em três partes:
 
 - **Aplicações:** A pasta `src` contém o código das aplicações propriamente ditas.
 
-- **Infraestrutura:** A pasta `infra` contem o código relacionado a criação da infraestrutura.
-
 - **Workflows:** A pasta `.github/workflows` contém os códigos de definições dos workflows criadas.
+
+- **Infraestrutura:** A pasta `infra` contem o código relacionado a criação da infraestrutura.
 
 
 > **OBSERVAÇÃO:**
 >
-> Os arquivos de Aplicação e Infraestrutura ficaram no mesmo repositório por conveniência. Em ambientes reais, principalmente se a infraestrutura não for exclusiva da aplicação em questão, é recomendado que estejam em repositórios separados.
+> - Os arquivos de Aplicação e Infraestrutura estão no mesmo repositório do GitHub por conveniência. Em ambientes reais, principalmente se a infraestrutura for compartilhada, é recomendado que estejam em repositórios separados.
 >
 
-Nos itens a seguir estão datalhados cada uma das três partes.
+Nos itens a seguir estão datalhados cada uma das três partes principais.
 
 
 
@@ -241,9 +241,8 @@ wander@bsnote283:~/desafio-aws/src$
 
 ### magic-calculator
 
-O magic-calculator é um frontend para utilização da API api-calculadora e responde no path `/frontend`. A seguir estão os prints das telas da aplicação:
 
-A seguir estão os prints das telas da aplicação:
+O magic-calculator é um frontend para utilização da API api-calculadora e responde no path `/frontend`. A seguir estão os prints das telas da aplicação:
 
 Tela principal
 ![frontend01](img/frontend01.png)
@@ -363,10 +362,25 @@ jobs:
 Esse workflow é responsável pelo processo de CI/CD das aplicações. Ele é composto por dois jobs: job "CI", que é responsável por gerar a imagem do container e publicar no DockerHub e o jov "CD" que é responsável por ajustar o manifesto kubernestes e realizar o deploy da aplicação.
 
 
-O `Job CI` gera uma imagem de container a partir do Dockerfile, aplica as tags da `latest` e a versão gerada. Como estamos utilizando um único repositório no DockerHub para DEV e PRD, a tag da imagem é gerada utilizando duas variáveis: `environment`, que é recebida por parâmetro, definindo qual ambiente está sendo executado, e `run_number`, que é uma variável do próprio GihubActions que é gerada com o número da execução do workflow. Dessa forma, é possível diferenciar se as imagens foram geradas para PRD ou DEV.
+O `Job CI` gera uma imagem de container a partir do Dockerfile, aplica as tags da `latest` e a versão gerada. 
+
+A versão é definida utilizando duas variáveis: `environment`, que é recebida por parâmetro e define qual ambiente está sendo executado, e `run_number`, que é uma variável do próprio GihubActions gerada automaticamente contendo o id da execução do workflow. 
+
+Abaixo segue o print do DockerHub demonstrando os repositórios criados:
+
+![dockerhub01](img/dockerhub01.png)
 
 
-O `Job CD` atualiza o manifesto kubernetes com os valores necessários e aplica no cluster EKS. Depois disso, ele tem um passo de configurar o Target Group do ALB com os IPs do load balancer gerado para o service do kubernetes declarado no arquivo de manifesto. Esse step está abordado no item de `Infraestrutura` deste documento.
+
+O `Job CD` atualiza o manifesto kubernetes com os valores necessários e aplica no cluster EKS. Depois disso, foi criado um step que utiliza o `AWS CLI` para executar as seguintes ações:
+
+- Coleta o DNS do NLB associado com o service kuberetes da aplicação
+
+- Identifica os IPs associados com o NLB
+
+- Identifica o nome do target group do ALB de aplicações e associa os IPs do NLB no target group
+
+Esse step está abordado no item de `Infraestrutura` deste documento, onde está contextualizado.
 
 
 ### Workflow "INFRA - CI/CD" (terraform.yml)
@@ -390,6 +404,24 @@ A integraçao inicialmente foi realizada usando openidentity, mas tive problemas
 
 Essa forma de conexão, utilizando o openidentity, é mais segura e restrita e deve ser preferencialmente utilizada. 
 
+
+## Infraestrutura
+
+
+
+### Terraform
+
+### VPC
+
+### RDS
+
+### EKS
+
+### Route53
+
+### Signoz (APM)
+
+### CloudFront
 
 
 
