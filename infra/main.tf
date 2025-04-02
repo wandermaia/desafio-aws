@@ -14,6 +14,7 @@ locals {
   geral_nodegroup_capacity_type  = var.capacity_type_ndgrp_geral
   security_group_name_mysql      = "security-group-mysql-${var.environment}"
   security_group_name_ec2        = "security-group-ec2-${var.environment}"
+  observability_namespace_k8s    = "observability"
 
   tags = {
     Projeto     = local.name

@@ -2,7 +2,7 @@ name: "FRONT - MAGIC-CALCULATOR DEV DEPLOY"
 
 on:
   push:
-    branches: ["develop"]
+    branches: ["main"]
     paths: ["src/magic-calculator/**"]
   workflow_dispatch:
 
@@ -24,8 +24,8 @@ jobs:
       db-password: ${{ secrets.DB_PASSWORD }}
     with:
       aws-region: "us-east-1"
-      environment: "dev"
+      environment: "prd"
       app-name: "magic-calculator"
       app-path: "src/magic-calculator"
-      app-dockerhub-repository: "dev-magic-calculator"
+      app-dockerhub-repository: "magic-calculator"
       app-namespace-kubernetes: "magic"

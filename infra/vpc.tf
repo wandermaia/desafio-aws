@@ -33,5 +33,4 @@ module "vpc" {
     "kubernetes.io/role/elb" : "1",
     "kubernetes.io/cluster/eks-${var.environment}" : "shared"
   }
-
 }

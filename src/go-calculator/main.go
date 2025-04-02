@@ -88,7 +88,7 @@ func getHandler(w http.ResponseWriter, r *http.Request) {
 	totalGets.Inc()
 	log.Println("Requisição GET recebida em /backend")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("ok"))
+	w.Write([]byte("API em execução!"))
 }
 
 // Função para a execução da chamada POST
