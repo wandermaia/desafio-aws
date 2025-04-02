@@ -407,11 +407,76 @@ Essa forma de conexão, utilizando o openidentity, é mais segura e restrita e d
 
 ## Infraestrutura
 
+Para a criação da Infraestrutura foi utilizada apenas uma conta da AWS, onde o ambiente de DEV e PRD utilzam VPCs diferentes. Esta abordagem foi utilizada para facilitar o projeto. Em ambiente produtivo é recomendado usar segregação por contas AWS.
+
+A seguir estão os tópicos relacionados a criação da infraestrutura.
 
 
 ### Terraform
 
+
+A ferramenta utilizada para criar a infraestrutura foi o terraform. 
+
+Para a configuração de backend foi utilizado um bucket S3 para armazenar o arquivos de State e o Lock. O bucket utilizado para este projeto se chama `wandermaia-terraform-statefile` e é altamente recomendado que esse o bucket esta com a opção **Bucket Versioning Habilitada**.
+
+> **OBSERVAÇÃO:**
+> 
+> - A função **DynamoDB-based locking** está obsoleta e será removida em uma versão futura do Terraform.
+>
+
+Foram confiugrados três providers para utilização no terraform:
+
+- **aws:** para interagir com os recursos da AWS
+
+- **kubernetes:** para gerenciar os recursos do kubernetes
+
+- **helm:** para gerenciar os charts no cluster kubernetes
+
+
+Todos os arquivos do terraform estão na pasta `desafio-aws/infra`.
+
+Dentro dessa pasta foi criado um diretório que contém os arquivos de variáveis `terraform.tfvars` de cada workspace, também segregados por pastas. Para este projeto serão utilizados dois workspaces: dev e prd.
+
+A seguir está a estrutura de diretórios e arquivos da pasta de infra:
+
+```bash
+
+wander@bsnote283:~/desafio-aws$ tree infra
+infra
+├── alb.tf
+├── cdn.tf
+├── destroy_config.json
+├── ec2.tf
+├── eks.tf
+├── envs
+│   ├── dev
+│   │   ├── K8s-Infra-value.yaml
+│   │   └── terraform.tfvars
+│   └── prd
+│       ├── K8s-Infra-value.yaml
+│       └── terraform.tfvars
+├── main.tf
+├── outputs.tf
+├── provider.tf
+├── rds.tf
+├── route53.tf
+├── security-groups.tf
+├── signoz-helm.tf
+├── variables.tf
+└── vpc.tf
+
+3 directories, 18 files
+wander@bsnote283:~/desafio-aws$
+
+```
+
+Para output foram configurados apenas três itens: o Endpoint do cluster EKS, o nome do cluster EKS e o comando necessário para configurar o kubeconfig utilizando o AWS CLI.
+
+Nós próximos itens serão datalhados as criações dos recursos.
+
 ### VPC
+
+Estrutura da VPC.
 
 ### RDS
 
@@ -498,10 +563,24 @@ Terraform Workspaces
 https://developer.hashicorp.com/terraform/language/state/workspaces
 
 
-AWS Provider
+AWS Provider Terraform
 
 https://registry.terraform.io/providers/hashicorp/aws/latest/docs
 
+
+kubernetes Provider  Terraform
+
+https://registry.terraform.io/providers/hashicorp/kubernetes/latest
+
+
+Helm Provider Terraform
+
+https://registry.terraform.io/providers/hashicorp/helm/latest
+
+
+Backend Block S3 - Terraform
+
+https://developer.hashicorp.com/terraform/language/backend/s3
 
 AWS VPC Terraform module
 
