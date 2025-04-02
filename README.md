@@ -395,7 +395,7 @@ Esse workflow é responsável pelo processo de criação ou destruição da infr
 }
 
 ```
-As configurações são definidas com base no workspace do terraform para definir se o ambiente executado é homologação ou produção.
+As configurações desse arquivo são definidas com base nos workspaces do terraform para definir se o ambiente executado é homologação ou produção.
 
 
 ### Integração GitHub Actions com AWS
@@ -405,7 +405,11 @@ A integraçao inicialmente foi realizada usando openidentity, mas tive problemas
 Essa forma de conexão, utilizando o openidentity, é mais segura e restrita e deve ser preferencialmente utilizada. 
 
 
+Uma melhoria interessante que pode ser adicionada nesse workflow é a inclusão da ferramenta **[Infracost](https://github.com/infracost/infracost)**. Essa ferramenta realiza uma estimativa de custos com base na execução do terraform plan e pode ser utilizada juntamente com um passo de aprovação antes da criação.
+
+
 ## Infraestrutura
+
 
 Para a criação da Infraestrutura foi utilizada apenas uma conta da AWS, onde o ambiente de DEV e PRD utilzam VPCs diferentes. Esta abordagem foi utilizada para facilitar o projeto. Em ambiente produtivo é recomendado usar segregação por contas AWS.
 
@@ -470,7 +474,7 @@ wander@bsnote283:~/desafio-aws$
 
 ```
 
-Para output foram configurados apenas três itens: o Endpoint do cluster EKS, o nome do cluster EKS e o comando necessário para configurar o kubeconfig utilizando o AWS CLI.
+Para outputs, foram configurados apenas três itens: o Endpoint do cluster EKS, o nome do cluster EKS e o comando necessário para configurar o kubeconfig utilizando o AWS CLI.
 
 Nós próximos itens serão datalhados as criações dos recursos.
 
@@ -602,28 +606,34 @@ https://developer.hashicorp.com/terraform/language/functions/cidrsubnet
 
 
 Resource: aws_cloudfront_distribution
+
 https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_distribution
+
 
 Infracost
 
 https://github.com/infracost/infracost
 
 
-
 AWS RDS Terraform module
 https://registry.terraform.io/modules/terraform-aws-modules/rds/aws/latest
 
+
 Complete example
+
 https://github.com/terraform-aws-modules/terraform-aws-rds/blob/master/examples/complete-mysql/main.tf
 
 
 Controle o tráfego para seus recursos da AWS usando grupos de segurança
+
 https://docs.aws.amazon.com/pt_br/vpc/latest/userguide/vpc-security-groups.html
 
 
 Docker - Multi-stage builds
+
 https://docs.docker.com/build/building/multi-stage/
 
 
 Automate CloudFront updates when load balancer endpoints change by using Terraform
+
 https://docs.aws.amazon.com/prescriptive-guidance/latest/patterns/automate-cloudfront-updates-when-load-balancer-endpoints-change.html
