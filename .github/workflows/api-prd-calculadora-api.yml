@@ -1,4 +1,4 @@
-name: "API - CALCULADORA PRD DEPLOY"
+name: "API - CALCULADORA DEPLOY (PRD)"
 
 on:
   push:

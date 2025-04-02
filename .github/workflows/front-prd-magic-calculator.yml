@@ -1,4 +1,4 @@
-name: "FRONT - MAGIC-CALCULATOR PRD DEPLOY"
+name: "FRONT - MAGIC-CALCULATOR DEPLOY (PRD)"
 
 on:
   push:
