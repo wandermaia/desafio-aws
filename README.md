@@ -5,9 +5,8 @@ Este repositório será utilizado para armazenar os arquivos e documentações r
 
 ## Objetivo do Projeto
 
+
 Foi disponibilizada a descrição do desafio, presente no arquivo `desafio-aws/DESCRIÇÃO_DESAFIO.md`, onde o objetivo é construir uma stack de infraestrutura que provisione um ambiente capaz de rodar os componentes descritos no cenário relatado. Dessa forma, este projeto visa atender essa demanda explorando soluções e debater, tanto as tecnologias (usadas ou não), quanto os custos associados.
-
-
 
 
 ## Premissas do Projeto
@@ -116,8 +115,142 @@ O projeto pode ser dividido basicamente em três partes:
 > Os arquivos de Aplicação e Infraestrutura ficaram no mesmo repositório por conveniência. Em ambientes reais, principalmente se a infraestrutura não for exclusiva da aplicação em questão, é recomendado que estejam em repositórios separados.
 >
 
-
 Nos itens a seguir estão datalhados cada uma das três partes.
+
+
+
+## Aplicações
+
+
+Foram desenvolvidas duas aplicações: API que se chama `api-calculadora` e um frontend que se chama `magic-calculator`. Para a realização de testes locais foi criado um arquivo docker-compose no caminho `desafio-aws/src/docker-compose.yml`. Para subir os testes locais basta executar o seguinte comando:
+
+```bash
+
+docker-compose up -d
+
+```
+Com isso, será incializado um containter do banco de dados MySQL e serão gerados os containers tanto da API quanto do Frontend com base nos Dockerfiles `src/go-calculator/Dockerfile` e `src/magic-calculator/Dockerfile`, respectivamente.
+
+
+
+### api-calculadora
+
+
+
+A API responde no path `/backend` a dois verbos HTTP: GET e POST. Para o GET ela responde apenas uma mensagem de health check e código 200 enquanto para o POST ela recebe um nome e dois números inteiros, devolvendo o resultado da soma. Além disso, o handler do POST salva o nome do usuário, os dois números e a hora da chamada no banco de dados MySQL.
+
+> **OBSERVAÇÃO:**
+>
+> - Ao inicializar, a API verifica o banco de dados e tabela para gravação dos dados. Caso ela não exista, ela é criada.
+>
+
+Para realizar os testes locais, pode ser utilizado o comando `curl` da seguinte forma:
+
+```bash
+
+wander@bsnote283:~/desafio-aws/src$ curl http://localhost:7000/backend -i
+HTTP/1.1 200 OK
+Date: Wed, 02 Apr 2025 12:11:51 GMT
+Content-Length: 18
+Content-Type: text/plain; charset=utf-8
+
+API em execução!
+wander@bsnote283:~/desafio-aws/src$ 
+wander@bsnote283:~/desafio-aws/src$ curl -X POST http://localhost:7000/backend -H "Content-Type: application/json" -d '{"nome":"Wander", "operador1":5, "operador2":10}' -i
+HTTP/1.1 200 OK
+Date: Wed, 02 Apr 2025 12:12:03 GMT
+Content-Length: 17
+Content-Type: text/plain; charset=utf-8
+
+{"resultado":15}
+wander@bsnote283:~/desafio-aws/src$ 
+
+```
+
+> **OBSERVAÇÃO:**
+>
+> - Caso esteja utilizando o VScode, há uma extensão chamada `REST Client` que realizada chamadas baseadas em arquivo `.http`. Foi criado o arquivo `src/go-calculator/testes/calculator.http` contendo algumas chamadas, tanto de sucesso quanto de erro, para realizar os testes da API.
+>
+
+
+Para validar a inserção no banco de dados, podemos acessar o shell do container e verificar o conteúdo da tabela, conforme os comandos abaixo:
+
+
+```bash
+
+wander@bsnote283:~/desafio-aws/src$ docker ps
+CONTAINER ID   IMAGE          COMMAND                  CREATED         STATUS                   PORTS                                                    NAMES
+e19524876872   src-frontend   "python app.py"          3 minutes ago   Up 3 minutes             0.0.0.0:5000->5000/tcp, [::]:5000->5000/tcp              front-magic-calculator
+265f9f731a4e   src-api        "./api"                  3 minutes ago   Up 3 minutes             0.0.0.0:7000->7000/tcp, [::]:7000->7000/tcp              go-calculator
+3d38c5ee3f43   mysql:8.0      "docker-entrypoint.s…"   3 minutes ago   Up 3 minutes (healthy)   0.0.0.0:3306->3306/tcp, [::]:3306->3306/tcp, 33060/tcp   mysql-8
+wander@bsnote283:~/desafio-aws/src$
+wander@bsnote283:~/desafio-aws/src$ docker exec -it mysql-8 /bin/bash
+bash-5.1# mysql -h localhost -P 3306 -uuser -ppassword -D go-calculator
+mysql: [Warning] Using a password on the command line interface can be insecure.
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Welcome to the MySQL monitor.  Commands end with ; or \g.
+Your MySQL connection id is 30
+Server version: 8.0.41 MySQL Community Server - GPL
+
+Copyright (c) 2000, 2025, Oracle and/or its affiliates.
+
+Oracle is a registered trademark of Oracle Corporation and/or its
+affiliates. Other names may be trademarks of their respective
+owners.
+
+Type 'help;' or '\h' for help. Type '\c' to clear the current input statement.
+
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| go-calculator      |
+| information_schema |
+| performance_schema |
++--------------------+
+3 rows in set (0.00 sec)
+
+mysql> show tables;
++-------------------------+
+| Tables_in_go-calculator |
++-------------------------+
+| operacoes               |
++-------------------------+
+1 row in set (0.00 sec)
+
+mysql> select * from operacoes;
++----+--------+-----------+-----------+---------------------+
+| id | nome   | operador1 | operador2 | data_execucao       |
++----+--------+-----------+-----------+---------------------+
+|  1 | Wander |         5 |        10 | 2025-04-02 12:30:50 |
+|  2 | Wander |         5 |       -10 | 2025-04-02 12:30:57 |
+|  3 | Wander |        -5 |       -10 | 2025-04-02 12:31:05 |
++----+--------+-----------+-----------+---------------------+
+3 rows in set (0.00 sec)
+
+mysql> exit
+Bye
+bash-5.1# exit
+exit
+wander@bsnote283:~/desafio-aws/src$ 
+
+```
+
+
+### magic-calculator
+
+O magic-calculator é um frontend para utilização da API api-calculadora e responde no path `/frontend`. A seguir estão os prints das telas da aplicação:
+
+A seguir estão os prints das telas da aplicação:
+
+Tela principal
+![frontend01](img/frontend01.png)
+
+
+Tela de resultado
+![frontend02](img/frontend02.png)
 
 
 ## Workflows (GitHub Actions)
