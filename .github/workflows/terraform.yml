@@ -80,3 +80,14 @@ jobs:
         run: terraform workspace select ${{ inputs.environment }} || terraform workspace new ${{ inputs.environment }} &&
           terraform apply "${{ inputs.environment }}.plan"
 
+      # Aplicando os manifestos no eks
+      - name: Deploy to EKS
+        if: steps.read-destroy-config.outputs.destroy != 'true'
+        working-directory: ./infra
+        run: |
+          aws eks update-kubeconfig --name "eks-${{ inputs.environment }}" --region ${{ inputs.aws-region }}
+
+          echo -e "\nArquivo de maifesto que será aplicado:\n"
+          cat ./k8s/*
+          
+          kubectl apply -f ./k8s/
