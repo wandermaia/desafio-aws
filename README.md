@@ -513,7 +513,7 @@ Nos próximos itens serão datalhados as criações dos recursos.
 
 A estrutura da VPC está definida para utilizar três Zonas de disponibilidade. Para este projeto foi definido que serão utilizadas três tipos de subnets: Database, Privada e Pública.
 
-As subnets de databases (uma para cada zona de disponibilidade) são exclusivas para a utilização de RDS ou servidores de bancos de dados. Foi definido um `subnet group` contendo as três subnets de database que serão utilizadas a criação do RDS. As subnets de database também são subnets privadas e acessam a internet apenas via `nat gatway`.
+As subnets de databases (uma para cada zona de disponibilidade) são exclusivas para a utilização de RDS ou servidores de bancos de dados. Foi definido um `subnet group` contendo as três subnets de database que serão utilizadas a criação do RDS. As subnets de database também são privadas e acessam a internet apenas via `nat gatway`.
 
 As subnets privadas (também uma para cada zona de disponibilidade) serão exclusivas para os servidores e serviços relacionados a aplicação. Assim como nas subnets de databases o acesso a internet é realizado através de um `nat gatway`.
 
@@ -539,7 +539,7 @@ A única diferença entre a VPC de DEV e PRD é o range de IPs, que são definid
 
 ### RDS
 
-O RDS definido para esse projeto utiliza a engine do MySQL 8. A instância criada é do tipo **"db.t4g.micro"**. Esse modelo de instância utliza processadores AWS Graviton2 (Arquitetura ARM) e são mais baratos do que os equivalentes de arquitetura X86_64.
+O RDS definido para esse projeto utiliza a engine do MySQL 8. A instância criada é do tipo **"db.t4g.micro"**. Esse modelo de instância utliza processadores AWS **Graviton2** (Arquitetura ARM) e são mais baratos do que os equivalentes de arquitetura X86_64.
 
 O subnet group criado juntamente com a VPC é utilizado para o instalação do RDS.
 
