@@ -411,7 +411,7 @@ Uma melhoria interessante que pode ser adicionada nesse workflow é a inclusão 
 ## Infraestrutura
 
 
-Para a criação da Infraestrutura foi utilizada apenas uma conta da AWS, onde o ambiente de DEV e PRD utilzam VPCs diferentes. Esta abordagem foi utilizada para facilitar o projeto. Em ambiente produtivo é recomendado usar segregação por contas AWS.
+Para a criação da Infraestrutura foi utilizada apenas uma conta da AWS, onde o ambiente de DEV e PRD utilzam VPCs diferentes. Esta abordagem foi utilizada para facilitar o projeto. Em ambiente produtivo é recomendado usar segregação por contas AWS. Caso não seja possível utilizar mais de uma conta, pelo menos criar os ambientes em regiões diferentes da AWS já é uma melhor escolha.
 
 A seguir estão os tópicos relacionados a criação da infraestrutura.
 
@@ -478,83 +478,199 @@ Para outputs, foram configurados apenas três itens: o Endpoint do cluster EKS, 
 
 Nós próximos itens serão datalhados as criações dos recursos.
 
+
 ### VPC
 
-Estrutura da VPC.
+
+A estrutura da VPC está definida para utilizar três Zonas de disponibilidade. Para este projeto foi definido que serão utilizadas três tipos de subnetes: Database, Privada e Pública.
+
+As subnets de databases (uma para cada zona de disponibilidade) são exclusivas para a utilização de RDS ou servidores de bancos de dados. Foi definido um subnet group contendo as três subnetes de database que serão utilizadas a criação do RDS. As subnetes de database também são subnetes privadas e acessam a internet apenas via `nat gatway`.
+
+As subnetes privadas (também uma para cada zona de disponibilidade) serão exclusivas para os servidores e serviços relacionados a aplicação. Assim como nas subnets de databases o acesso a internet é realizado através de um `nat gatway`.
+
+As subnetes públicas (uma por zona de disponiblidade) serão utilizadas para serviços que precisaram de acesso a internet. O acesso é realizado por um `internet gateway`.
+
+A seguir está um print das subnetes criadas para ambiente de DEV:
+
+
+![subnets](img/subnets01.png)
+
+
+Foi habilitada o suporte a DNS, para ser utilizado com o Route53, e a utilização de single nat gateway. Este último foi habilitado para reduzir custos.
+
+
+A seguir está o diagrama da estrutura da VPC:
+
+
+![vpc](img/vpc.drawio.png)
+
+
+A única diferença entre a VPC de DEV e PRD é o range de IPs, que são definidos pelas variáveis do arquivo `terraform.tfvars` do respectivo workspace. Para DEV está definido o CIDR **"10.0.0.0/16"**, enquanto para produção está definido o CIDR **"192.168.0.0/16"**. 
+
 
 ### RDS
 
+O RDS definido para esse projeto utiliza a engine do MySQL 8. A instância criada é do tipo **"db.t4g.micro"**. Esse modelo de instância utliza processadores AWS Graviton2 (Arquitetura ARM) e são mais baratos do que os equivalentes de arquitetura X86_64.
+
+O subnet group criado juntamente com a VPC é utilizado para o instalação do RDS.
+
+Foi criado também um security group que permite acessoa apenas na porta do banco (3306) e de origem das subnetes privadas. Poderia também ser utilzada uma Network ACL, mas, para este caso, o security group atende perfeitamente e é mais simples.
+
+A seguir estão os prints do RDS criado:
+
+Conectividade e segurança:
+
+![rds02](img/rds02.png)
+
+Subnet group:
+
+![rds01](img/rds01.png)
+
+
 ### EKS
+
+
+Para a instalação do EKS foi utilizado o blue print do terraform disponibilizado pela própria AWS. 
+
+Na criação das subnetes foi necesário adicionar as tags `"kubernetes.io/role/internal-elb"` e `"kubernetes.io/role/elb"` para que o EKS saiba quais são as redes para subir os load balancers para acesso público e privado. Essas mesmas subnets também precisaram da marcação da tag `"kubernetes.io/cluster/eks_cluster_name"` para que o EKS possa utilizar essas subnets.
+
+Por padrão o EKS utiliza um storage class configurado para EBS do tipo **gp2 não criptografado**. Critografia, mesmo para dados em repouso, é uma boa prática da AWS. Então, criamos um novo storage class que utiliza volumes EBS **gp3 e criptografia habilitada**. Em seguida, esse novo storage class é definido com padrão do ambiente.
+
+Para a execução dos workloads, foi criado um nodegroup com instâncias EC2 do tipo **SPOT**. Para utilização desse tipo de instâncias, acessamos o link do **[instance-advisor](https://aws.amazon.com/pt/ec2/spot/instance-advisor/)** para verificar a frequência média de interrução das instâncias. Após isso, definimos três modelos com uma boa capactidade e baixa taxa de interrupção para serem utilizadas no nodegroup. Poderiam ser vaŕios modelos e das mais diferentes capacidades, mas para o nosso contexto apenas três são suficientes.
+
+A diferença de custos entre uma instância ON DEMAND e uma SPOT, o **desconto da SPOT passa de 60%**. A seguir está um print do instance advisor, coletado no momento da escrita deste documento, exibindo duas das instâncias que estamos utilizando no nodegroup:
+
+![spot01](img/spot01.png)
+
+
+Neste ponto cabe uma melhoria: verificar a frequência média de interrução das instâncias automaticamente para sempre atualizar o nodegroup com as melhores opções de instâncias SPOT, visto que o percentual de interruções pode variar de acordo com a demanda do tipo de instância e da região onde está sendo utilizada.
+
+Verifiquei a possibilidade de utilizar o `AWS Fargate` ao invés das instâncias. Já havia avaliado ele em outras ocasiões e é mais caro do que utilizar instâncias EC2, ainda mais comparado ao contexto de SPOT. Dessa forma, optamos por utilizar nodegroup de instância EC2.
+
+Outra vantagem de utilizar o blue print para EKS é a facilidade em configurar os Addons e algumas funcionalidades que seriam mais trabalhosas. As que foram utilizadas na instalação são:
+
+- Load Balancer Controller
+
+- Metric Server
+
+- Cluster Autoscaller
+
+- Nginx Ingress Controller
+
+- Addons VPC CNI, CoreDNS, EBS CSI Driver, kube-proxy e EKS Pod Identity Agent.
+
+
+Existem outras funcionalidades como o karpenter, velero, cert manager, ArgoCD dentre outros. Mas para este projeto, utilizamos apenas os descritos acima.
+
+
+Para garantir a elasticidade do cluster, o Cluster autosaceller ajusta o nodegroup adicionando ou removendo EC2 conforme o consumo de recursos do ambiente.
+
+No nível de kubernetes, foram criados HPAs (Horizontal Pod Autoscaling) para que as aplicações também possam escalar ou reduzir pods conforme a necessidade.
+
 
 ### Route53
 
+
+O Route53 foi utilizado para a criação de DNS para teste interno através do resource padrão do terraform para o Route53.
+
+Foi criada a zona interna `wandermaia.com`, na qual realizamos o apontamento do RDS, da API e front da Calculadora. As entradas criadas para este projeto estão descritas a seguir:
+
+- RDS: CNAME apontando para o endereço do RDS. O endereço é gerado em tempo de excução com base nas variáveis de ambiente (DEV ou PRD) do workspace. Para DEV será `mysql-dev.wandermaia.com`, enquanto para produção será `mysql-prd.wandermaia.com`
+
+- calculadora-api - CNAME apontando para o load balancer de aplicações. O endereço segue o mesmo padrão do RDS ficando da seguinte forma: `"calculadora-api-dev.wandermaia.com"` e `"calculadora-api-prd.wandermaia.com"`, para DEV e PRD respectivamente.
+
+- magic-calculator - CNAME apontando para o load balancer de aplicações. Também segue o mesmo padrão: `"magic-calculator-dev.wandermaia.com"` e `"magic-calculator-prd.wandermaia.com"`, para DEV e PRD respectivamente.
+
+
+
+### ALB e CloudFront
+
+
+Para a publicação das aplicações foi criado uma distribuição do CloudFront e um ALB subnet pública pelo Terraform. 
+
+A seguir está um diagrama da publicação final da estrutura do ambiente:
+
+
+![EKS](img/eks.drawio.png)
+
+
+
+
 ### Signoz (APM)
 
-### CloudFront
+
+
+Para o monitoramento, inicialmente havia pensado em utilizar o Prometheus com Grafana, mas pela facilidade de instalação e funcionalidades, acabei optando pelo Signoz. A instalação do Signoz foi realizada pelo módulo `helm_release` do terraform.
+
+O SigNoz, como descrito no próprio site: "**[SigNoz](https://signoz.io/)** é uma alternativa de código aberto ao Datadog ou New Relic. Obtenha APM, logs, traces, métricas, exceções e alertas em uma única ferramenta." Uso o SigNoz atualmente e realmente é uma ótima ferramenta. Ela vai atender muito bem este projeto.
+
+Para acesso a interface WEB, também foi criado um ingress (ALB internet-facing) para realização dos testes. 
+
+> **OBSERVAÇÃO:** 
+>
+> - Por ser uma ferramenta que tem informações de toda a infraestrutura, eu prefiro que a interface esteja disponível somente na rede interna. Mas foi disponibilizada dessa forma para facilitar os testes.
+>
+
+Além do SigNoz, propriamente dito, também foi instalada a integração do cluster EKS através do `opentelemetry`. Também foi utilizado o helm neste caso. A única atividade que ficou manual na instalação desa ferramenta é a instalação dos Dashboards. Eles estão disponíveis no GitHub em arquivos no formato json. O processo de import é igual ao do Grafana.
+
+A seguir estão alguns prints coletados no ambiente após a instalação no cluster EKS:
+
+Logs do pod do Magic Calculator (Frontend:)
+
+![signoz01](img/signoz01.png)
+
+
+Métricas dos worker nodes do EKS:
+
+![signoz02](img/signoz02.png)
+
+Métricas de consumo de recursos dos PODs:
+
+![signoz03](img/signoz03.png)
+
+Métricas de consumo de recursos por node do EKS:
+
+![signoz04](img/signoz04.png)
 
 
 
+## Dificuldades na Publicação das Aplicações
 
 
-- Repositório e Pipelines
-    - visão geral
-    - 
+Incialmente havia criado um ingress do tipo LB para cada aplicação. Esse ingress gera um ALB nas subnetes de públicas, porém ele é gerado no momento da aplicação dos manifestos do kubernetes e ainda existe a possibilidade desse load balancer ser alterado.
 
-- Infraestrutura
-    VPC
-    CLOUDFRONT
-    kubernetes
-        autoscaller
-- Aplicação
-    - Frontend
-    - API
+Diante disso, avaliei a possibilidade de utilizar o workflow da aplicação para configurar a distribuição do cloudfront no momento do deploy da aplicação. Essa abordagem é mais complexa de ser realizada, visto que a quantidade de parâmetros para alteração pelo AWS CLI é grande. 
 
+Dessa forma, resolvi seguir uma abordagem diferente: usei o terraform para criar um ALB já com os devidos target groups na subnet pública e, em seguida, crio a distribuição do CloudFront pelo próprio terraform e já realizo a configuração para o ALB criado. Com isso passou a ser necessário que o workflow configure apenas os target groups associados com as aplicações, ou seja, o worflow da api-calculadora vai configurar o target group referente a API e o workflow do frontend-magic-calculator vai configurar o target group referente ao frontend.
 
-## Tecnologias Utilizadas
+Neste ponto esbarrei com mais um pequeno problema: não é possível utilizar um ALB como target Group de outro ALB. Isso só é permitido de NLB (Network Load Balancer) para ALB (Aplication Load Baalncer). Então removei o ingress e adicionei um service do tiop load balancer, gerando um NLB na subnet privada.
 
-- AWS
-    - Cloudfront
-    - ELB
-    - EKS
-    - IAM
-    - VPC
-    - RDS
-    - Route53
-    - EC2
-- Terraform
-- Cloudfront
-- Linguagens de programação/scripts Bash, Go e Python
-- Container
-- Docker
-- Kubernetes
-- Signoz
+Apesar de não ser possível criar target groups apontando para o endereço do NLB, podemos utilizar target groups do tipo IP e adicionar todos os três IPs do NLB (IP das três subnetes privadas e cross-zone habilitado), pois os IPs do NLB não são alterados. Essa foi a abordagem utilizada no workflow para solucionar o problema.
 
-## Motivação para o uso de cada tecnologia
+O workflow utiliza o AWS CLI para identificar o endereço do load balancer, verifica para quais IPs o endereço está resolvendo o nome e, em seguida, adiciona eles no Target group. Toda execução do workflow este comando pode ser executado sem problemas, pois se o IP já existir no target group, ele não aparesenta erro.
+
+Após isso, a publicação funcionou perfeitamente. 
 
 
 
+## Evoluções Para o Projeto
 
-## Estrutura da Solução
+A seguir estão descritas as melhorias que podem ser implementadas no projeto
 
-Diagramas
+### Segurança
 
-Repositorio
-fluxo terraform
-vpc
-cloudfront
+Na implementação atual, é possível chamar o ALB a partir da internet sem passar pelo CloudFront. Existem duas maneiras de resolver este problema: via security group e via ACL de WAF. 
 
-## Instruções de Execução do Projeto
+Para implementar a regra via security group a AWS fornece uma lista de prefixos do CloudFront, mas para utilizar ela quase extrapola o limite de prefixos do Security group. É possível solicitar a AWS para aumentar quantidade de regras suportadas pelo security group.
 
+No caso do WAF, ele não foi habilitado no ambiente para não aumentar os custos. Em um ambiente produtivo, essa também é uma opção válida.
 
-## Configurações
-
-
-
-## Possíveis Evoluções do projeto
-
+Ainda existe uma terceira opção, mas essa tem que estar em região compatível da AWS: habilitar a origem privada da VPC. Dessa forma o cloudfront passa a ser o único ponto de entrada a partir da interet, pois o backend da distribuição é a rede privada da VPC.
 
 
 ## Referências
+
+Documentações consultadas durante o desenvolvimento do projeto:
 
 
 Use IAM roles to connect GitHub Actions to actions in AWS
@@ -586,6 +702,7 @@ Backend Block S3 - Terraform
 
 https://developer.hashicorp.com/terraform/language/backend/s3
 
+
 AWS VPC Terraform module
 
 https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest
@@ -597,12 +714,13 @@ https://registry.terraform.io/modules/terraform-aws-modules/eks/aws/latest
 
 
 Complete VPC Module parameters
+
 https://github.com/terraform-aws-modules/terraform-aws-vpc/blob/master/examples/complete/main.tf
 
 
 cidrsubnet Function
-https://developer.hashicorp.com/terraform/language/functions/cidrsubnet
 
+https://developer.hashicorp.com/terraform/language/functions/cidrsubnet
 
 
 Resource: aws_cloudfront_distribution
@@ -637,3 +755,34 @@ https://docs.docker.com/build/building/multi-stage/
 Automate CloudFront updates when load balancer endpoints change by using Terraform
 
 https://docs.aws.amazon.com/prescriptive-guidance/latest/patterns/automate-cloudfront-updates-when-load-balancer-endpoints-change.html
+
+
+Restrict access with VPC origins
+
+https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/private-content-vpc-origins.html
+
+
+AWS-managed prefix list weight
+
+https://docs.aws.amazon.com/vpc/latest/userguide/working-with-aws-managed-prefix-lists.html#use-aws-managed-prefix-list
+
+
+What is SigNoz?
+
+https://signoz.io/docs/introduction/
+
+
+Deploying SigNoz to AWS
+
+https://signoz.io/docs/install/kubernetes/aws/
+
+
+Kubernetes Infra Dashboard
+
+https://github.com/SigNoz/dashboards/tree/main/k8s-infra-metrics
+
+
+Amazon EKS Monitoring with OpenTelemetry
+
+https://signoz.io/blog/eks-monitoring-with-opentelemetry/
+
