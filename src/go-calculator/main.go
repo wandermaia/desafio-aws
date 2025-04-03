@@ -118,7 +118,7 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 		req.Nome, req.Operador1, req.Operador2, time.Now())
 	if err != nil {
 		log.Printf("Erro ao inserir no banco de dados: %v", err)
-		http.Error(w, "Erro ao inserir no banco de dados", http.StatusInternalServerError)
+		http.Error(w, "Erro ao inserir no banco de dados: ", http.StatusInternalServerError)
 		return
 	}
 

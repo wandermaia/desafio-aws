@@ -117,7 +117,7 @@ jobs:
           echo -e "\nColetando os dados para configurar o Target Group:\n"
           
           # Adicionado esse tempo apenas para aguardar a criação inicial dos recursos no kubernetes antes de realizar a coleta dos dados.
-          sleep 30
+          sleep 60
 
           SVC_NAME_NLB="${{ inputs.app-name }}-nlb" #calculadora-api-nlb
           echo -e "\n Service Name (NLB) - ${SVC_NAME_NLB}\n"
@@ -131,6 +131,9 @@ jobs:
           # Coletando o endereço de DNS do load balancer que está associado so service do kubernetes
           NLB=`kubectl get svc -n ${NAMESPACE} | grep ${SVC_NAME_NLB} | awk '{print $4}'`
           echo -e "\n DNS do Network Load Balancer - ${NLB}\n"
+
+          echo -e "\n Validando comando dig:\n"
+          dig ${NLB}
 
           # Segregando os IPs. Como estão sendo utlizadas 3 subnets, serão 3 IPs
           IPS=`dig ${NLB} | grep "ANSWER SECTION" -A 3 | grep -v ANSWER| awk '{print $5}'`

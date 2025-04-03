@@ -11,31 +11,46 @@ Foi disponibilizada a descrição do desafio, presente no arquivo `desafio-aws/D
 
 ## Premissas do Projeto
 
-- Testar as soluções propostas, mantendo o custo baixo
+- Testar as soluções propostas
+
+- Manter o custo baixo
+
 - Foco em segurança e boas práticas
 
 
 ## Visão Geral da Solução Proposta
 
 
+Para atender a demanda, foram criadas duas aplicações: uma API e um Frontend simples para utilização em conjunto com essa API. A API realiza a soma de dois números inteiros e salva no banco de dados MySQL os números solicitados, o nome do usuário e hora que foi realizada a operação.
+
 Analisando a descrição do desafio, pensei inicialmente em utilizar a seguinte estrutura:
 
 - Cloudfont para CDN
+
 - S3 para o site estático
-- Função Lambda para a API
+
+- Função Lambda e API Gateway para a API
+
 - RDS para o banco de dados
+
 - Cloudwatch para monitoramento e alertas
 
-Com essa stack é possível atender a descrição, sendo escalável e mantendo o custo baixo. Porém, por se tratar de um Desafio sobre AWS, optei por fazer de forma a explorar as possíbilibilidades que a cloud da AWS pode proporcionar.
 
-Assim, optei por fazer utilizando a seguinte estrutura:
+Com essa stack é possível atender a demanda inicial, sendo escalável e mantendo o custo baixo. Porém, caso haja a necessidade de evoluir a aplicação, essa stack pode não ser suficiente para o novo cenário. Então optei por utilizar uma estrutura mais flexível, que atenda a necessidade atual e futuras evoluções do projeto.
 
-- Cloudfont para CDN
+A stack que será utilizada para a implementação do projeto foi definida da seguinte forma:
+
+- CloudFront para CDN (Content Delivery Network)
+
 - ALB na rede pública, para centralizar e direcionar o tráfego para a rede privada
-- Containers para as aplicações
-- EKS para a orquestração dos containers
-- Signoz (Solução de APM opensource) para monitoramento e alertas.
 
+- Containers para as aplicações
+
+- EKS (Elastic Kubernetes Service) para a orquestração dos containers
+
+- RDS (Relational Database Service) para o banco de dados
+
+- Signoz (Solução de APM opensource) para monitoramento e alertas.
 
 
 ## Estrutura do Projeto
@@ -44,11 +59,11 @@ Assim, optei por fazer utilizando a seguinte estrutura:
 Para a execução do projeto, foi criado um único repositório para hospedar todo o código. A seguir está a estrutura de arquivos e diretórios utilizado no projeto:
 
 ```bash
-wander@bsnote283:~/desafio-aws$ tree
+
+wander@bsnote283:~/repos/desafio/desafio-aws$ tree
 .
 ├── DESCRIÇÃO_DESAFIO.md
 ├── img
-│   └── repository.drawio.png
 ├── infra
 │   ├── alb.tf
 │   ├── cdn.tf
@@ -62,6 +77,9 @@ wander@bsnote283:~/desafio-aws$ tree
 │   │   └── prd
 │   │       ├── K8s-Infra-value.yaml
 │   │       └── terraform.tfvars
+│   ├── k8s
+│   │   ├── ingress-signoz.yaml
+│   │   └── ubuntu.yaml
 │   ├── main.tf
 │   ├── outputs.tf
 │   ├── provider.tf
@@ -83,21 +101,19 @@ wander@bsnote283:~/desafio-aws$ tree
     │   ├── main.go
     │   └── testes
     │       └── calculator.http
-    ├── magic-calculator
-    │   ├── app.py
-    │   ├── Dockerfile
-    │   ├── k8s
-    │   │   └── manifesto.yaml
-    │   ├── requirements.txt
-    │   └── templates
-    │       ├── error.html
-    │       ├── index.html
-    │       └── result.html
-    └── README.md
+    └── magic-calculator
+        ├── app.py
+        ├── Dockerfile
+        ├── k8s
+        │   └── manifesto.yaml
+        ├── requirements.txt
+        └── templates
+            ├── error.html
+            ├── index.html
+            └── result.html
 
-12 directories, 38 files
-wander@bsnote283:~/desafio-aws$ 
-
+13 directories, 36 files
+wander@bsnote283:~/repos/desafio/desafio-aws$
 
 ```
 
@@ -105,9 +121,9 @@ O projeto pode ser dividido basicamente em três partes:
 
 - **Aplicações:** A pasta `src` contém o código das aplicações propriamente ditas.
 
-- **Workflows:** A pasta `.github/workflows` contém os códigos de definições dos workflows criadas.
+- **Workflows:** A pasta `.github/workflows` contém os códigos de definições dos workflows criados.
 
-- **Infraestrutura:** A pasta `infra` contem o código relacionado a criação da infraestrutura.
+- **Infraestrutura:** A pasta `infra` contém o código relacionado a criação da infraestrutura.
 
 
 > **OBSERVAÇÃO:**
@@ -115,21 +131,21 @@ O projeto pode ser dividido basicamente em três partes:
 > - Os arquivos de Aplicação e Infraestrutura estão no mesmo repositório do GitHub por conveniência. Em ambientes reais, principalmente se a infraestrutura for compartilhada, é recomendado que estejam em repositórios separados.
 >
 
-Nos itens a seguir estão datalhados cada uma das três partes principais.
+Nos itens a seguir estão detalhados cada uma das três partes principais.
 
 
 
 ## Aplicações
 
 
-Foram desenvolvidas duas aplicações: API que se chama `api-calculadora` e um frontend que se chama `magic-calculator`. Para a realização de testes locais foi criado um arquivo docker-compose no caminho `desafio-aws/src/docker-compose.yml`. Para subir os testes locais basta executar o seguinte comando:
+Como informado anteriormente, foram desenvolvidas duas aplicações: API que se chama `api-calculadora` e um frontend que se chama `magic-calculator`. Para a realização de testes locais foi criado um arquivo docker-compose no caminho `desafio-aws/src/docker-compose.yml`. Para subir os testes locais basta executar o seguinte comando:
 
 ```bash
 
 docker-compose up -d
 
 ```
-Com isso, será incializado um containter do banco de dados MySQL e serão gerados os containers tanto da API quanto do Frontend com base nos Dockerfiles `src/go-calculator/Dockerfile` e `src/magic-calculator/Dockerfile`, respectivamente.
+Com isso, será inicializado um container do banco de dados MySQL e serão gerados os containers tanto da API quanto do Frontend com base nos Dockerfiles `src/go-calculator/Dockerfile` e `src/magic-calculator/Dockerfile`, respectivamente.
 
 
 
@@ -252,10 +268,11 @@ Tela de resultado
 ![frontend02](img/frontend02.png)
 
 
+
 ## Workflows (GitHub Actions)
 
 
-Conforme mensionado anteriormente, foi criado um único repositório que será utilizado para armazenar todo o código. Neste repositório foram criadas duas branchs principais: a de develop, para o ambiente de desenvolvimento, e a branch main, para o ambiente de produção. 
+Conforme mencionado anteriormente, foi criado um único repositório que será utilizado para armazenar todo o código. Neste repositório foram criadas duas branchs principais: a de develop, para o ambiente de desenvolvimento, e a branch main, para o ambiente de produção. 
 
 Essas duas branchs serão utilizadas tanto para a Infraestrutura quanto para a homologação.
 
@@ -297,7 +314,7 @@ wander@bsnote283:~/desafio-aws$
 
 Para reaproveitar o código dos workflows, foi escolhida uma estratégia na qual temos dois workflows principais: `ci-cd.yml` (para aplicação) e `terraform.yml` (para infraestrutura).
 
-O Workflow declarado no arquivo `ci-cd.yml` é responsável por executar o "trabalhao pesado" para os quatro workflows de aplicação (dev e prd da api, dev e prd do frontend), enquanto o arquivo `terraform.yml` segue a mesma ideia, executando o "trabalho pesado" para os dois workflows de infraestrutura (dev e prd).
+O Workflow declarado no arquivo `ci-cd.yml` é responsável por executar o "Trabalho pesado" para os quatro workflows de aplicação (dev e prd da api, dev e prd do frontend), enquanto o arquivo `terraform.yml` segue a mesma ideia, executando o "trabalho pesado" para os dois workflows de infraestrutura (dev e prd).
 
 ### Triggers dos workflows
 
@@ -382,6 +399,8 @@ O `Job CD` atualiza o manifesto kubernetes com os valores necessários e aplica 
 
 Esse step está abordado no item de `Infraestrutura` deste documento, onde está contextualizado.
 
+Um ponto interessante é que, na primeira execução, há uma demora na definição dos IPs quando o NLB é criado, o que provoca um erro no workflow devido à lista de IPs retornar vazia. Para contornar esse problema, adicionei um sleep de 60 segundos para aguardar a disponibilização dos IPs.
+
 
 ### Workflow "INFRA - CI/CD" (terraform.yml)
 
@@ -396,6 +415,9 @@ Esse workflow é responsável pelo processo de criação ou destruição da infr
 
 ```
 As configurações desse arquivo são definidas com base nos workspaces do terraform para definir se o ambiente executado é homologação ou produção.
+
+Por algum motivo, o provider do kubectl não funcionou no worflow de forma nenhuma. Como ainda não consegui identificar a causa, adicionei mais um step configurando o kubeconfig e executando os arquivos da pasta `infra/k8s`.
+
 
 
 ### Integração GitHub Actions com AWS
@@ -514,7 +536,7 @@ O RDS definido para esse projeto utiliza a engine do MySQL 8. A instância criad
 
 O subnet group criado juntamente com a VPC é utilizado para o instalação do RDS.
 
-Foi criado também um security group que permite acessoa apenas na porta do banco (3306) e de origem das subnetes privadas. Poderia também ser utilzada uma Network ACL, mas, para este caso, o security group atende perfeitamente e é mais simples.
+Foi criado também um security group que permite acesso apenas na porta do banco (3306) e de origem das subnets privadas. Poderia também ser utilizada uma Network ACL, mas, para este caso, o security group atende perfeitamente e é mais simples.
 
 A seguir estão os prints do RDS criado:
 
@@ -536,14 +558,14 @@ Na criação das subnetes foi necesário adicionar as tags `"kubernetes.io/role/
 
 Por padrão o EKS utiliza um storage class configurado para EBS do tipo **gp2 não criptografado**. Critografia, mesmo para dados em repouso, é uma boa prática da AWS. Então, criamos um novo storage class que utiliza volumes EBS **gp3 e criptografia habilitada**. Em seguida, esse novo storage class é definido com padrão do ambiente.
 
-Para a execução dos workloads, foi criado um nodegroup com instâncias EC2 do tipo **SPOT**. Para utilização desse tipo de instâncias, acessamos o link do **[instance-advisor](https://aws.amazon.com/pt/ec2/spot/instance-advisor/)** para verificar a frequência média de interrução das instâncias. Após isso, definimos três modelos com uma boa capactidade e baixa taxa de interrupção para serem utilizadas no nodegroup. Poderiam ser vaŕios modelos e das mais diferentes capacidades, mas para o nosso contexto apenas três são suficientes.
+Para a execução dos workloads, foi criado um nodegroup com instâncias EC2 do tipo **SPOT**. Para utilização desse tipo de instâncias, acessamos o link do **[instance-advisor](https://aws.amazon.com/pt/ec2/spot/instance-advisor/)** para verificar a frequência média de interrupção das instâncias. Após isso, definimos três modelos com uma boa capacidade e baixa taxa de interrupção para serem utilizadas no nodegroup. Poderiam ser vários modelos e das mais diferentes capacidades, mas para o nosso contexto apenas três são suficientes.
 
 A diferença de custos entre uma instância ON DEMAND e uma SPOT, o **desconto da SPOT passa de 60%**. A seguir está um print do instance advisor, coletado no momento da escrita deste documento, exibindo duas das instâncias que estamos utilizando no nodegroup:
 
 ![spot01](img/spot01.png)
 
 
-Neste ponto cabe uma melhoria: verificar a frequência média de interrução das instâncias automaticamente para sempre atualizar o nodegroup com as melhores opções de instâncias SPOT, visto que o percentual de interruções pode variar de acordo com a demanda do tipo de instância e da região onde está sendo utilizada.
+Neste ponto cabe uma melhoria: verificar a frequência média de interrupção das instâncias automaticamente para sempre atualizar o nodegroup com as melhores opções de instâncias SPOT, visto que o percentual de interrupções pode variar de acordo com a demanda do tipo de instância e da região onde está sendo utilizada.
 
 Verifiquei a possibilidade de utilizar o `AWS Fargate` ao invés das instâncias. Já havia avaliado ele em outras ocasiões e é mais caro do que utilizar instâncias EC2, ainda mais comparado ao contexto de SPOT. Dessa forma, optamos por utilizar nodegroup de instância EC2.
 
@@ -591,7 +613,7 @@ Para a publicação das aplicações foi criado uma distribuição do CloudFront
 A seguir está um diagrama da publicação final da estrutura do ambiente:
 
 
-![EKS](img/eks.drawio.png)
+![cdn](img/cdn.drawio.png)
 
 
 
@@ -637,7 +659,7 @@ Métricas de consumo de recursos por node do EKS:
 ## Dificuldades na Publicação das Aplicações
 
 
-Incialmente havia criado um ingress do tipo LB para cada aplicação. Esse ingress gera um ALB nas subnetes de públicas, porém ele é gerado no momento da aplicação dos manifestos do kubernetes e ainda existe a possibilidade desse load balancer ser alterado.
+Inicialmente havia criado um ingress do tipo LB para cada aplicação. Esse ingress gera um ALB nas subnets de públicas, porém ele é gerado no momento da aplicação dos manifestos do kubernetes e ainda existe a possibilidade desse load balancer ser alterado.
 
 Diante disso, avaliei a possibilidade de utilizar o workflow da aplicação para configurar a distribuição do cloudfront no momento do deploy da aplicação. Essa abordagem é mais complexa de ser realizada, visto que a quantidade de parâmetros para alteração pelo AWS CLI é grande. 
 
@@ -647,7 +669,7 @@ Neste ponto esbarrei com mais um pequeno problema: não é possível utilizar um
 
 Apesar de não ser possível criar target groups apontando para o endereço do NLB, podemos utilizar target groups do tipo IP e adicionar todos os três IPs do NLB (IP das três subnetes privadas e cross-zone habilitado), pois os IPs do NLB não são alterados. Essa foi a abordagem utilizada no workflow para solucionar o problema.
 
-O workflow utiliza o AWS CLI para identificar o endereço do load balancer, verifica para quais IPs o endereço está resolvendo o nome e, em seguida, adiciona eles no Target group. Toda execução do workflow este comando pode ser executado sem problemas, pois se o IP já existir no target group, ele não aparesenta erro.
+O workflow utiliza o AWS CLI para identificar o endereço do load balancer, verifica para quais IPs o endereço está resolvendo o nome e, em seguida, adiciona eles no Target group. Toda execução do workflow este comando pode ser executado sem problemas, pois se o IP já existir no target group, ele não apresenta erro.
 
 Após isso, a publicação funcionou perfeitamente. 
 
@@ -734,6 +756,7 @@ https://github.com/infracost/infracost
 
 
 AWS RDS Terraform module
+
 https://registry.terraform.io/modules/terraform-aws-modules/rds/aws/latest
 
 

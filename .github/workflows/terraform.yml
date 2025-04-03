@@ -46,6 +46,21 @@ jobs:
           DESTROY="$(jq -r '.${{ inputs.environment }}' ./infra/destroy_config.json)"
           echo "destroy=$(echo $DESTROY)" >> $GITHUB_OUTPUT
 
+
+      # # Removendo os elementos criados. Esse passo é importante para garantir que não fique nada prendendo a destruição.
+      # # Houve alguns casos que load balancers criados fora do terraform estavam prendendo a infraestrutura.
+      # - name: Deploy to EKS
+      #   if: steps.read-destroy-config.outputs.destroy == 'true'
+      #   working-directory: ./infra
+      #   run: |
+      #     aws eks update-kubeconfig --name "eks-${{ inputs.environment }}" --region ${{ inputs.aws-region }}
+
+      #     echo -e "\nArquivos de maifesto que serão Deletados:\n"
+      #     cat ./k8s/*
+          
+      #     kubectl delete -f ./k8s/
+
+
       - name: Terraform Init
         working-directory: ./infra
         run: |
@@ -80,3 +95,14 @@ jobs:
         run: terraform workspace select ${{ inputs.environment }} || terraform workspace new ${{ inputs.environment }} &&
           terraform apply "${{ inputs.environment }}.plan"
 
+      # Aplicando os manifestos no eks
+      - name: Deploy to EKS
+        if: steps.read-destroy-config.outputs.destroy != 'true'
+        working-directory: ./infra
+        run: |
+          aws eks update-kubeconfig --name "eks-${{ inputs.environment }}" --region ${{ inputs.aws-region }}
+
+          echo -e "\nArquivos de maifesto que serão aplicados:\n"
+          cat ./k8s/*
+          
+          kubectl apply -f ./k8s/
