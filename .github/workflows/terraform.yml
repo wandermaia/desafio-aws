@@ -47,18 +47,18 @@ jobs:
           echo "destroy=$(echo $DESTROY)" >> $GITHUB_OUTPUT
 
 
-      # Removendo os elementos criados. Esse passo é importante para garantir que não fique nada prendendo a destruição.
-      # Houve alguns casos que load balancers criados fora do terraform estavam prendendo a infraestrutura.
-      - name: Deploy to EKS
-        if: steps.read-destroy-config.outputs.destroy == 'true'
-        working-directory: ./infra
-        run: |
-          aws eks update-kubeconfig --name "eks-${{ inputs.environment }}" --region ${{ inputs.aws-region }}
+      # # Removendo os elementos criados. Esse passo é importante para garantir que não fique nada prendendo a destruição.
+      # # Houve alguns casos que load balancers criados fora do terraform estavam prendendo a infraestrutura.
+      # - name: Deploy to EKS
+      #   if: steps.read-destroy-config.outputs.destroy == 'true'
+      #   working-directory: ./infra
+      #   run: |
+      #     aws eks update-kubeconfig --name "eks-${{ inputs.environment }}" --region ${{ inputs.aws-region }}
 
-          echo -e "\nArquivos de maifesto que serão Deletados:\n"
-          cat ./k8s/*
+      #     echo -e "\nArquivos de maifesto que serão Deletados:\n"
+      #     cat ./k8s/*
           
-          kubectl delete -f ./k8s/
+      #     kubectl delete -f ./k8s/
 
 
       - name: Terraform Init
