@@ -52,7 +52,7 @@ A stack que será utilizada para a implementação do projeto foi definida da se
 
 - RDS para o banco de dados
 
-- Signoz (Solução de APM opensource) para monitoramento e alertas.
+- SigNoz (Solução de APM opensource) para monitoramento e alertas.
 
 
 ## Estrutura do Projeto
@@ -159,7 +159,7 @@ A API responde no path `/backend` a dois verbos HTTP: GET e POST. Para o GET ela
 
 > **OBSERVAÇÃO:**
 >
-> - Ao inicializar, a API verifica a conexão com o banco de dados e se a tabela para gravação dos dados. Caso a tabela não exista, ela é criada.
+> - Ao inicializar, a API verifica a conexão com o banco de dados e se a tabela para gravação dos dados existe. Caso a tabela não exista, ela é criada.
 >
 
 Para realizar os testes locais, pode ser utilizado o comando `curl` da seguinte forma:
@@ -403,7 +403,7 @@ O `Job CD` atualiza o manifesto kubernetes com os valores necessários e aplica 
 
 Esse step está abordado no item de `Dificuldades na Publicação das Aplicações` deste documento, onde está contextualizado.
 
-Um ponto interessante é que, na primeira execução, há uma demora na definição dos IPs quando o NLB é criado, o que provoca um erro no workflow devido à lista de IPs retornar vazia. Para contornar esse problema, adicionei um sleep de 60 segundos para aguardar a disponibilização dos IPs.
+Um ponto interessante é que, na primeira execução, há uma demora na definição dos IPs quando o NLB é criado, o que provoca um erro no workflow devido à lista de IPs retornar vazia. Para contornar esse problema, adicionei um sleep de 90 segundos para aguardar a disponibilização dos IPs.
 
 
 ### Workflow "INFRA - CI/CD" (terraform.yml)
