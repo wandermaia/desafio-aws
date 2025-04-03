@@ -591,7 +591,7 @@ Para a publicação das aplicações foi criado uma distribuição do CloudFront
 A seguir está um diagrama da publicação final da estrutura do ambiente:
 
 
-![EKS](img/eks.drawio.png)
+![cdn](img/cdn.drawio.png)
 
 
 
