@@ -27,7 +27,7 @@ def index():
 
         try:
             response = requests.post(API_URL, json=data, headers=headers)
-            response.raise_for_status()  # Lança exceção para status HTTP de erro.
+            response.raise_for_status()  # Lança exceção para status HTTP de erro .
             result = response.json().get('resultado')
             return render_template('result.html', result=result)
         except requests.exceptions.RequestException as e:

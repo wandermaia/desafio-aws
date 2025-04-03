@@ -127,7 +127,7 @@ func postHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	log.Println("Iniciando a API...")
+	log.Println("Iniciando a API ...")
 	initDB()
 	defer db.Close()
 
