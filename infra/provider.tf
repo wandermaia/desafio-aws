@@ -1,6 +1,5 @@
-# A configuração de backend não permite a utilização de variáveis e/ou locals
 provider "aws" {
-  region = "us-east-1"
+  region = var.regiao
 }
 
 terraform {

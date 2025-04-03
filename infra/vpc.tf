@@ -22,6 +22,7 @@ module "vpc" {
     Name = "vpc-${var.environment}"
   })
 
+  database_subnet_group_name = "dabase-subnet-group-${var.environment}"
 
   # Tags das subnets para EKS
   private_subnet_tags = {

@@ -1,5 +1,6 @@
 # Zona privada para testes da aplicação
 resource "aws_route53_zone" "private" {
+  #name = "wandermaia.com"
   name = "wandermaia.com"
 
   vpc {

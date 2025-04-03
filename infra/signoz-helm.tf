@@ -66,7 +66,7 @@ YAML
 }
 
 
-# Instalação do sigonz APM através do helm
+# Instalação do opentelemetry no cluster EKS
 resource "helm_release" "opentelemetry_eks" {
 
   depends_on = [
@@ -85,15 +85,3 @@ resource "helm_release" "opentelemetry_eks" {
   ]
 
 }
-
-
-#https://signoz.io/docs/introduction/
-
-# https://signoz.io/docs/install/kubernetes/aws/
-# https://github.com/SigNoz/dashboards/tree/main/k8s-infra-metrics
-# https://signoz.io/blog/eks-monitoring-with-opentelemetry/
-
-#helm repo add signoz https://charts.signoz.io
-# helm install -n signoz  --create-namespace kubelet-otel signoz/k8s-infra \
-# --set signozApiKey=<ingestionKey> --set otelCollectorEndpoint="ingest.<region>.signoz.cloud:443" --set otelInsecure=false
-# otelCollectorEndpoint: signoz-otel-collector.observability.svc.cluster.local:4317
