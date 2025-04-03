@@ -132,6 +132,9 @@ jobs:
           NLB=`kubectl get svc -n ${NAMESPACE} | grep ${SVC_NAME_NLB} | awk '{print $4}'`
           echo -e "\n DNS do Network Load Balancer - ${NLB}\n"
 
+          echo -e "\n Validando comando dig:\n"
+          dig ${NLB}
+
           # Segregando os IPs. Como estão sendo utlizadas 3 subnets, serão 3 IPs
           IPS=`dig ${NLB} | grep "ANSWER SECTION" -A 3 | grep -v ANSWER| awk '{print $5}'`
           echo -e "\n IPs do Network Load Balancer - ${IPS}\n"
