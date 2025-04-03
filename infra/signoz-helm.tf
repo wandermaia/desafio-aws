@@ -1,20 +1,20 @@
-# Namespace para instalação do Signoz.
-resource "kubernetes_namespace_v1" "ns_signoz" {
+# # Namespace para instalação do Signoz.
+# resource "kubernetes_namespace_v1" "ns_signoz" {
 
-  depends_on = [
-    null_resource.kubeconfig
-  ]
-  metadata {
-    name = local.observability_namespace_k8s
-  }
+#   depends_on = [
+#     null_resource.kubeconfig
+#   ]
+#   metadata {
+#     name = local.observability_namespace_k8s
+#   }
 
-  # Ignorando as alterações que forem feitas nos labels dos namespaces. O Rancher, por exemplo adiciona labels conforme o projeto.
-  lifecycle {
-    ignore_changes = [
-      metadata,
-    ]
-  }
-}
+#   # Ignorando as alterações que forem feitas nos labels dos namespaces. O Rancher, por exemplo adiciona labels conforme o projeto.
+#   lifecycle {
+#     ignore_changes = [
+#       metadata,
+#     ]
+#   }
+# }
 
 
 
@@ -22,7 +22,7 @@ resource "kubernetes_namespace_v1" "ns_signoz" {
 resource "helm_release" "signoz" {
 
   depends_on = [
-    kubernetes_namespace_v1.ns_signoz
+    null_resource.kubeconfig
   ]
 
 
@@ -30,6 +30,7 @@ resource "helm_release" "signoz" {
   repository = "https://charts.signoz.io"
   chart      = "signoz"
   namespace  = local.observability_namespace_k8s
+  create_namespace = true
   version    = "0.74.3"
 
 }
