@@ -2,7 +2,7 @@
 resource "kubernetes_namespace_v1" "ns_signoz" {
 
   depends_on = [
-    kubernetes_storage_class_v1.gp3
+    null_resource.kubeconfig
   ]
   metadata {
     name = local.observability_namespace_k8s
