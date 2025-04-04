@@ -711,7 +711,7 @@ Pesquisei algumas documentações a respeito e encontrei algumas formas de resol
 ### Estimativa de Custos de Infra com Infracost
 
 
-O Infracost é uma ferramenta opensource que consegue verificar o custo de infraestrutura nos principais cloud providers do mercado. Ele pode ser integrada no workflow do GitHub Actions e informar o custo estimado que será gerado/reduzido com base nas modificações que serão aplicadas.
+O **[Infracost](https://github.com/infracost/infracost)** é uma ferramenta opensource que consegue verificar o custo de infraestrutura nos principais cloud providers do mercado. Ele pode ser integrada no workflow do GitHub Actions e informar o custo estimado que será gerado/reduzido com base nas modificações que serão aplicadas.
 
 Como precisava de tempo para realização de testes, também não foi possível entregar juntamente com o projeto e entrou para a lista de evoluções.
 
