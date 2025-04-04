@@ -12,6 +12,24 @@ spec:
       labels:
         app: ubuntu
     spec:
+      # tolerations:
+      # - effect: NoSchedule
+      #   key: spot
+      #   operator: Equal
+      #   value: "true"
+      # affinity:
+      #   nodeAffinity:
+      #     requiredDuringSchedulingIgnoredDuringExecution:
+      #       nodeSelectorTerms:
+      #       - matchExpressions:
+      #         - key: topology.kubernetes.io/zone
+      #           operator: In
+      #           values:
+      #           - us-east-1a
+      #         - key: components
+      #           operator: In
+      #           values:
+      #           - geral
       containers:
         - name: ubuntu
           image: ubuntu:22.04

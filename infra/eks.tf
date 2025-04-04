@@ -70,6 +70,15 @@ module "eks_cluster" {
         role           = "worker"
       }
 
+      # taints = {
+      #   dedicated = {
+      #     key    = "spot"
+      #     value  = "true"
+      #     effect = "NO_SCHEDULE"
+      #   }
+      # }
+
+
       # Tags do Nodegroup
       tags = merge(local.tags, {
         Name = local.geral_nodegroup_name
