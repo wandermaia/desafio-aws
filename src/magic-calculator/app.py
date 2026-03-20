@@ -17,7 +17,7 @@ resource = Resource.create({"service.name": "magic-calculator"})
 # Configura o Provider e o Exportador para o ADOT Collector
 provider = TracerProvider(resource=resource)
 # O endpoint aponta para o seu coletor no namespace signoz
-exporter = OTLPSpanExporter(endpoint="http://adot-collector-collector.signoz.svc.cluster.local:4317", insecure=True)
+exporter = OTLPSpanExporter(endpoint="http://signoz-otel-collector.signoz.svc.cluster.local:4317", insecure=True)
 processor = BatchSpanProcessor(exporter)
 provider.add_span_processor(processor)
 trace.set_tracer_provider(provider)
