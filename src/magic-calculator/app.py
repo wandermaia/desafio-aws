@@ -28,19 +28,32 @@ RequestsInstrumentor().instrument()
 # --- FIM INSTRUMENTAÇÃO OPENTELEMETRY ---
 
 app = Flask(__name__)
-FlaskInstrumentor().instrument_app(app) # Instrumenta o app Flask
 
-API_URL = os.environ.get('API_URL', 'http://localhost:7000/backend')
+API_URL = os.environ.get('API_URL', 'http://localhost:7000/backend')  # Obtém a URL da API da variável de ambiente
 
 @app.route('/frontend', methods=['GET', 'POST'])
 def index():
-    # ... seu código original ...
     if request.method == 'POST':
-        # ... logic ...
+        nome = request.form['nome']
+        operador1 = request.form['operador1']
+        operador2 = request.form['operador2']
+
+        # Validação dos dados
+        if len(nome) < 3:
+            return render_template('index.html', error='Nome deve ter pelo menos 3 caracteres.')
         try:
-            # O RequestsInstrumentor vai capturar este POST automaticamente
+            operador1 = int(operador1)
+            operador2 = int(operador2)
+        except ValueError:
+            return render_template('index.html', error='Operadores devem ser números inteiros.')
+
+        data = {'nome': nome, 'operador1': operador1, 'operador2': operador2}
+        headers = {'Content-Type': 'application/json'}
+
+        try:
             response = requests.post(API_URL, json=data, headers=headers)
-            # ... rest of logic ...
+            response.raise_for_status()  # Lança exceção para status HTTP de erro .
+            result = response.json().get('resultado')
             return render_template('result.html', result=result)
         except requests.exceptions.RequestException as e:
             return render_template('error.html', error=str(e))
@@ -51,4 +64,4 @@ def voltar():
   return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0')
